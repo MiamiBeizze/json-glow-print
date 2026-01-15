@@ -219,18 +219,18 @@
   }
 }
 
-/* Print styles for A4 */
+/* Print styles for A4 - exactly like screen */
 @media print {
   @page {
     size: A4;
-    margin: 12mm;
+    margin: 10mm;
   }
 
-  body {
+  html, body {
+    width: 210mm;
     background: white !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    font-size: 10pt;
   }
 
   .no-print {
@@ -247,16 +247,6 @@
 
   .print-avoid-break {
     page-break-inside: avoid;
-  }
-
-  .print-compact {
-    padding: 0.5rem !important;
-    margin: 0.25rem 0 !important;
-  }
-
-  .gradient-header,
-  .gradient-section {
-    background: hsl(var(--primary)) !important;
   }
 }
 
