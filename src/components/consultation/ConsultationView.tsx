@@ -39,8 +39,8 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6 print:p-0 print:bg-white">
-      <div className="max-w-[210mm] mx-auto">
+    <div className="min-h-screen bg-background p-6 print:p-0 print:bg-white">
+      <div className="w-[210mm] mx-auto">
         <ConsultationHeader 
           title="Consulta Cadastral"
           subtitle="Relatório completo"
@@ -79,7 +79,7 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
           )}
 
           {/* Telefones e Emails */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             {response.telefones && response.telefones.length > 0 && (
               <SectionCard title="Telefones" icon={Phone} count={response.telefones.length}>
                 <div className="space-y-2">
@@ -228,7 +228,7 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
           <PropensitiesSection propensoes={response.propensoes} />
 
           {/* Benefícios e Vacinas */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             {response.beneficiosAuxilios && response.beneficiosAuxilios.length > 0 && (
               <SectionCard title="Benefícios/Auxílios" icon={Gift} count={response.beneficiosAuxilios.length}>
                 {response.beneficiosAuxilios.map((b, i) => (
@@ -259,7 +259,6 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
 
         <footer className="mt-8 pt-4 border-t border-divider text-center text-sm text-muted-foreground print:mt-4">
           <p>Documento gerado automaticamente • Informações confidenciais</p>
-          <p className="text-xs mt-1">Consulta: {data.SERVICE} • Custo: R$ {data.AMOUNT_CHARGED?.toFixed(2)}</p>
         </footer>
       </div>
     </div>

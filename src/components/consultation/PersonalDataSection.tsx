@@ -63,7 +63,7 @@ export const PersonalDataSection = ({ data }: PersonalDataSectionProps) => {
           </DataGrid>
 
           {/* Parents */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-divider">
+          <div className="grid grid-cols-2 gap-4 pt-3 border-t border-divider">
             <div className="flex items-start gap-3">
               <Heart className="w-4 h-4 text-pink-500 mt-0.5" />
               <DataField label="Nome da Mãe" value={data.mae?.nome} size="sm" />
@@ -75,7 +75,7 @@ export const PersonalDataSection = ({ data }: PersonalDataSectionProps) => {
           </div>
 
           {/* Socioeconomic */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-3 border-t border-divider">
+          <div className="grid grid-cols-4 gap-4 pt-3 border-t border-divider">
             <div className="flex items-start gap-2">
               <Wallet className="w-4 h-4 text-green-500 mt-0.5" />
               <DataField label="Renda Estimada" value={data.renda} highlight size="sm" />
@@ -90,7 +90,7 @@ export const PersonalDataSection = ({ data }: PersonalDataSectionProps) => {
 
           {/* Documents */}
           {(data.rg?.numero !== 'n/a' || data.ctps?.numero || data.tituloEleitor?.numero) && (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-3 border-t border-divider">
+            <div className="grid grid-cols-3 gap-4 pt-3 border-t border-divider">
               {data.rg?.numero !== 'n/a' && (
                 <DataField 
                   label="RG" 

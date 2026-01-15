@@ -22,7 +22,7 @@ export const RelatedByAddressSection = ({ relacionados }: RelatedByAddressSectio
       icon={MapPin} 
       count={relacionados.length}
     >
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-3">
         {relacionados.map((rel, i) => (
           <div key={i} className="flex items-start gap-3 p-3 bg-secondary/30 rounded-lg border border-border/50 hover:bg-secondary/50 transition-colors">
             {/* Avatar */}
