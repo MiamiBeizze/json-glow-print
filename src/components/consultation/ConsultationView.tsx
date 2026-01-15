@@ -7,7 +7,7 @@ import { PersonalDataSection } from "./PersonalDataSection";
 import { SectionCard } from "./SectionCard";
 import { DataGrid } from "./DataGrid";
 import { Badge } from "./Badge";
-import { FamilyTree } from "./FamilyTree";
+
 import { LeakedCredentialsSection } from "./LeakedCredentialsSection";
 import { RelatedByAddressSection } from "./RelatedByAddressSection";
 import { OnlinePurchasesSection } from "./OnlinePurchasesSection";
@@ -113,17 +113,6 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
             )}
           </div>
 
-          {/* Árvore Genealógica / Parentes */}
-          {response.parentes && response.parentes.length > 0 && (
-            <SectionCard title="Árvore Genealógica / Vínculos" icon={Users} count={response.parentes.length}>
-              <FamilyTree 
-                parentes={response.parentes}
-                genitores={response.genitores}
-                maeName={response.cadastral?.mae?.nome}
-                paiName={response.cadastral?.pai?.nome}
-              />
-            </SectionCard>
-          )}
 
           {/* Relacionados por Endereço */}
           <RelatedByAddressSection relacionados={response.relacionadosPorEndereco} />
