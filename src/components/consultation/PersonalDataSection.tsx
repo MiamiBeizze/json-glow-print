@@ -1,36 +1,20 @@
-import { User, CheckCircle, XCircle } from "lucide-react";
+import { User, Heart, GraduationCap, Wallet, AlertTriangle, CheckCircle } from "lucide-react";
 import { SectionCard } from "./SectionCard";
 import { DataField } from "./DataField";
 import { DataGrid } from "./DataGrid";
-import { DadosPessoais } from "@/types/consultation";
+import { Badge } from "./Badge";
+import { Cadastral } from "@/types/consultation";
 
 interface PersonalDataSectionProps {
-  data?: DadosPessoais;
+  data?: Cadastral;
 }
 
 export const PersonalDataSection = ({ data }: PersonalDataSectionProps) => {
   const isEmpty = !data || Object.keys(data).length === 0;
 
-  const formatCPF = (cpf?: string) => {
-    if (!cpf) return undefined;
-    const cleaned = cpf.replace(/\D/g, "");
-    return cleaned.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-  };
-
-  const formatDate = (date?: string) => {
-    if (!date) return undefined;
-    try {
-      return new Date(date).toLocaleDateString("pt-BR");
-    } catch {
-      return date;
-    }
-  };
-
-  const getSituacaoColor = (situacao?: string) => {
-    if (!situacao) return "text-empty-state";
-    const lower = situacao.toLowerCase();
-    if (lower.includes("regular")) return "text-success";
-    return "text-destructive";
+  const getSexoLabel = (sexo?: string) => {
+    if (!sexo) return undefined;
+    return sexo === 'M' ? 'Masculino' : sexo === 'F' ? 'Feminino' : sexo;
   };
 
   return (
@@ -41,34 +25,96 @@ export const PersonalDataSection = ({ data }: PersonalDataSectionProps) => {
       emptyMessage="Dados pessoais não disponíveis"
     >
       {data && (
-        <>
-          <div className="mb-4 pb-4 border-b border-divider">
-            <h3 className="text-lg font-bold text-foreground">{data.nome || "Nome não informado"}</h3>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-sm font-medium text-muted-foreground">
-                CPF: {formatCPF(data.cpf) || "Não informado"}
-              </span>
-              {data.situacaoCadastral && (
-                <span className={`flex items-center gap-1 text-xs font-medium ${getSituacaoColor(data.situacaoCadastral)}`}>
-                  {data.situacaoCadastral.toLowerCase().includes("regular") ? (
-                    <CheckCircle className="w-3 h-3" />
-                  ) : (
-                    <XCircle className="w-3 h-3" />
-                  )}
-                  {data.situacaoCadastral}
-                </span>
-              )}
+        <div className="space-y-4">
+          {/* Status badges */}
+          <div className="flex flex-wrap gap-2 pb-3 border-b border-divider">
+            {data.indicativoCriminal !== undefined && (
+              <Badge variant={data.indicativoCriminal ? "danger" : "success"}>
+                {data.indicativoCriminal ? (
+                  <><AlertTriangle className="w-3 h-3 mr-1" /> Indicativo Criminal</>
+                ) : (
+                  <><CheckCircle className="w-3 h-3 mr-1" /> Sem Indicativo Criminal</>
+                )}
+              </Badge>
+            )}
+            {data.flagObito2 !== undefined && (
+              <Badge variant={data.flagObito2 ? "danger" : "success"}>
+                {data.flagObito2 ? "Óbito Registrado" : "Sem Óbito"}
+              </Badge>
+            )}
+            {data.classeSocial && (
+              <Badge variant="info">
+                Classe {data.classeSocial}{data.subClasseSocial ? `/${data.subClasseSocial}` : ''}
+              </Badge>
+            )}
+            {data.signo && (
+              <Badge variant="neutral">
+                {data.signo} {data.signoChines && `• ${data.signoChines}`}
+              </Badge>
+            )}
+          </div>
+
+          {/* Main info grid */}
+          <DataGrid columns={4}>
+            <DataField label="Data de Nascimento" value={data.dataNasc} />
+            <DataField label="Idade" value={data.idade ? `${data.idade} anos` : undefined} />
+            <DataField label="Sexo" value={getSexoLabel(data.sexo)} />
+            <DataField label="Naturalidade" value={data.naturalidade !== 'n/a' ? data.naturalidade : undefined} />
+          </DataGrid>
+
+          {/* Parents */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-divider">
+            <div className="flex items-start gap-3">
+              <Heart className="w-4 h-4 text-pink-500 mt-0.5" />
+              <DataField label="Nome da Mãe" value={data.mae?.nome} size="sm" />
+            </div>
+            <div className="flex items-start gap-3">
+              <User className="w-4 h-4 text-blue-500 mt-0.5" />
+              <DataField label="Nome do Pai" value={data.pai?.nome !== 'N/a' ? data.pai?.nome : undefined} size="sm" />
             </div>
           </div>
-          <DataGrid columns={3}>
-            <DataField label="Data de Nascimento" value={formatDate(data.dataNascimento)} />
-            <DataField label="Idade" value={data.idade ? `${data.idade} anos` : undefined} />
-            <DataField label="Sexo" value={data.sexo} />
-            <DataField label="Nome da Mãe" value={data.nomeMae} />
-            <DataField label="Nome do Pai" value={data.nomePai} />
-            <DataField label="Data de Inscrição" value={formatDate(data.dataInscricao)} />
-          </DataGrid>
-        </>
+
+          {/* Socioeconomic */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-3 border-t border-divider">
+            <div className="flex items-start gap-2">
+              <Wallet className="w-4 h-4 text-green-500 mt-0.5" />
+              <DataField label="Renda Estimada" value={data.renda} highlight size="sm" />
+            </div>
+            <div className="flex items-start gap-2">
+              <GraduationCap className="w-4 h-4 text-blue-500 mt-0.5" />
+              <DataField label="Escolaridade" value={data.escolaridade} size="sm" />
+            </div>
+            <DataField label="CNS" value={data.cns?.toString()} size="sm" />
+            <DataField label="PIS" value={data.pis?.toString()} size="sm" />
+          </div>
+
+          {/* Documents */}
+          {(data.rg?.numero !== 'n/a' || data.ctps?.numero || data.tituloEleitor?.numero) && (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-3 border-t border-divider">
+              {data.rg?.numero !== 'n/a' && (
+                <DataField 
+                  label="RG" 
+                  value={`${data.rg?.numero || ''} ${data.rg?.orgao !== 'n/a' ? `(${data.rg?.orgao}${data.rg?.uf ? `/${data.rg.uf}` : ''})` : ''}`} 
+                  size="sm" 
+                />
+              )}
+              {data.ctps?.numero && (
+                <DataField 
+                  label="CTPS" 
+                  value={`${data.ctps.numero} / Série ${data.ctps.serie}`} 
+                  size="sm" 
+                />
+              )}
+              {data.tituloEleitor?.numero && (
+                <DataField 
+                  label="Título de Eleitor" 
+                  value={`${data.tituloEleitor.numero} - Zona ${data.tituloEleitor.zona} / Seção ${data.tituloEleitor.secao}`} 
+                  size="sm" 
+                />
+              )}
+            </div>
+          )}
+        </div>
       )}
     </SectionCard>
   );

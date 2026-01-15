@@ -3,23 +3,30 @@ interface DataFieldProps {
   value?: string | number | null;
   className?: string;
   highlight?: boolean;
+  size?: "sm" | "md" | "lg";
 }
 
-export const DataField = ({ label, value, className = "", highlight = false }: DataFieldProps) => {
+export const DataField = ({ label, value, className = "", highlight = false, size = "md" }: DataFieldProps) => {
   const displayValue = value ?? "—";
   const isEmpty = !value;
 
+  const sizeStyles = {
+    sm: { label: "text-[10px]", value: "text-xs" },
+    md: { label: "text-xs", value: "text-sm" },
+    lg: { label: "text-xs", value: "text-base" },
+  };
+
   return (
     <div className={`${className}`}>
-      <dt className="text-xs font-medium text-data-label uppercase tracking-wide mb-1">
+      <dt className={`${sizeStyles[size].label} font-medium text-data-label uppercase tracking-wide mb-0.5`}>
         {label}
       </dt>
       <dd
-        className={`text-sm font-medium ${
+        className={`${sizeStyles[size].value} font-medium ${
           isEmpty
             ? "text-empty-state"
             : highlight
-            ? "text-primary font-semibold"
+            ? "text-primary font-bold"
             : "text-data-value"
         }`}
       >
