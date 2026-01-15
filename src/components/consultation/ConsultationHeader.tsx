@@ -22,10 +22,9 @@ export const ConsultationHeader = ({ title, subtitle, cadastral, fotos }: Consul
     minute: "2-digit",
   });
 
-  // Get best photo (highest classification)
+  // Get best photo (highest classification) - supports both URL and base64
   const bestPhoto = fotos?.sort((a, b) => (b.classificacao || 0) - (a.classificacao || 0))[0];
-  const photoUrl = bestPhoto?.foto && !bestPhoto.foto.startsWith('data:') ? bestPhoto.foto : 
-                   bestPhoto?.foto?.startsWith('data:image') ? bestPhoto.foto : null;
+  const photoUrl = bestPhoto?.foto || null;
 
   return (
     <header className="gradient-header text-primary-foreground rounded-xl shadow-lg mb-6 print:shadow-none print:rounded-lg print:mb-4 overflow-hidden">

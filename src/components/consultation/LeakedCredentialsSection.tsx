@@ -1,4 +1,4 @@
-import { ShieldAlert, Eye, EyeOff, Copy, Check } from "lucide-react";
+import { ShieldAlert, Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { SectionCard } from "./SectionCard";
 import { Badge } from "./Badge";
@@ -9,16 +9,11 @@ interface LeakedCredentialsSectionProps {
 }
 
 export const LeakedCredentialsSection = ({ credenciais }: LeakedCredentialsSectionProps) => {
-  const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
   const [copied, setCopied] = useState<string | null>(null);
 
   if (!credenciais || credenciais.length === 0) return null;
 
   const totalLeaks = credenciais.reduce((acc, c) => acc + (c.resultados?.length || 0), 0);
-
-  const togglePassword = (key: string) => {
-    setShowPasswords(prev => ({ ...prev, [key]: !prev[key] }));
-  };
 
   const copyToClipboard = (text: string, key: string) => {
     navigator.clipboard.writeText(text);
@@ -68,15 +63,7 @@ export const LeakedCredentialsSection = ({ credenciais }: LeakedCredentialsSecti
                       <div>
                         <span className="text-[10px] text-muted-foreground uppercase">Senha</span>
                         <div className="flex items-center gap-1">
-                          <code className="text-xs bg-muted px-1.5 py-0.5 rounded">
-                            {showPasswords[key] ? r.password : '••••••••'}
-                          </code>
-                          <button 
-                            onClick={() => togglePassword(key)}
-                            className="p-1 hover:bg-muted rounded"
-                          >
-                            {showPasswords[key] ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-                          </button>
+                          <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-medium">{r.password}</code>
                           <button 
                             onClick={() => copyToClipboard(r.password || '', `pass-${key}`)}
                             className="p-1 hover:bg-muted rounded"
