@@ -464,6 +464,8 @@ export interface ServiceResponse {
   escolaridade?: Escolaridade[];
   genitores?: Genitor[];
   fotos?: Foto[];
+  extraFotos?: Foto[];
+  docsBase64?: any[];
   enderecos?: Endereco[];
   telefones?: Telefone[];
   emails?: Email[];
@@ -480,10 +482,40 @@ export interface ServiceResponse {
   vacinas?: Vacina[];
   meiDetalhado?: MEIDetalhado[];
   politica?: Politica;
-  // Legacy fields
-  contatos?: Contato[];
+  // Veículos e Planos
+  placas?: Veiculo[];
   veiculos?: Veiculo[];
+  planos?: Plano[];
+  planosMoveis?: Plano[];
+  // Documentos
+  rgs?: RGDetalhado[];
+  rais?: RAIS[];
   cin?: CIN;
+  cnh?: any;
+  // Outros dados
+  assinaturas?: any[];
+  ppe?: any[];
+  outrosNomes?: any[];
+  chavesPix?: any[];
+  contasBancos?: any[];
+  universitarios?: any[];
+  emprestimos?: any[];
+  beneficios?: any[];
+  dadosConselho?: any[];
+  imoveisSp?: any[];
+  pagamentosAuxilioEmergencial?: any[];
+  certidaoObito?: any;
+  irpf?: any[];
+  estrangeiro?: any;
+  sisu?: any[];
+  prouni?: any[];
+  inssSiape?: any[];
+  linkedin?: any[];
+  drones?: any[];
+  ccf?: any[];
+  viagens?: any[];
+  // Legacy/Other
+  contatos?: Contato[];
   vazamentos?: Vazamento[];
   planosSaude?: PlanoSaude[];
   energias?: Energia[];
@@ -491,11 +523,6 @@ export interface ServiceResponse {
   aeronaves?: Aeronave[];
   processos?: Processo[];
   vinculosPorProcessos?: VinculoProcesso[];
-  // New fields from JSON
-  placas?: Veiculo[];
-  planos?: Plano[];
-  rgs?: RGDetalhado[];
-  rais?: RAIS[];
 }
 
 export interface ConsultaAPIResponse {

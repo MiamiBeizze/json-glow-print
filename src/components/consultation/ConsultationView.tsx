@@ -1,6 +1,6 @@
 import { 
   MapPin, Phone, Mail, Briefcase, Building2, AlertTriangle, 
-  Syringe, Gift, ShoppingBag
+  Syringe, Gift, ShoppingBag, Users, FileText, ImageIcon
 } from "lucide-react";
 import { ConsultationHeader } from "./ConsultationHeader";
 import { PersonalDataSection } from "./PersonalDataSection";
@@ -12,6 +12,12 @@ import { OnlinePurchasesSection } from "./OnlinePurchasesSection";
 import { PropensitiesSection } from "./PropensitiesSection";
 import { VehiclesSection } from "./VehiclesSection";
 import { PlansSection } from "./PlansSection";
+import { ProfessionsSection } from "./ProfessionsSection";
+import { RAISSection } from "./RAISSection";
+import { EducationSection } from "./EducationSection";
+import { ParentsSection } from "./ParentsSection";
+import { RGsSection } from "./RGsSection";
+import { FamilyTree } from "./FamilyTree";
 import { ConsultaAPIResponse } from "@/types/consultation";
 
 interface ConsultationViewProps {
@@ -38,6 +44,12 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(num);
   };
 
+  // Combine fotos and extraFotos
+  const allFotos = [
+    ...(response.fotos || []),
+    ...(response.extraFotos || [])
+  ];
+
   return (
     <div className="min-h-screen bg-background p-6 print:p-0 print:bg-white">
       <div className="w-[210mm] mx-auto">
@@ -45,20 +57,44 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
           title="Consulta Cadastral"
           subtitle="Relatório completo"
           cadastral={response.cadastral}
-          fotos={response.fotos}
+          fotos={allFotos}
         />
 
         <div className="space-y-4 print:space-y-3">
+          {/* Dados Pessoais */}
           <PersonalDataSection data={response.cadastral} />
 
           {/* Credenciais Vazadas */}
           <LeakedCredentialsSection credenciais={response.credenciaisVazadas} />
 
+          {/* Níveis de Escolaridade (se tiver mais de um) */}
+          {response.escolaridade && response.escolaridade.length > 1 && (
+            <EducationSection escolaridade={response.escolaridade} />
+          )}
+
+          {/* Profissões */}
+          <ProfessionsSection profissoes={response.profissoes} />
+
+          {/* RGs Detalhados */}
+          <RGsSection rgs={response.rgs} />
+
+          {/* Parentes/Família */}
+          {response.parentes && response.parentes.length > 0 && (
+            <SectionCard title="Árvore Familiar" icon={Users} count={response.parentes.length}>
+              <FamilyTree 
+                parentes={response.parentes}
+                genitores={response.genitores}
+                maeName={response.cadastral?.mae?.nome}
+                paiName={response.cadastral?.pai?.nome}
+              />
+            </SectionCard>
+          )}
+
           {/* Endereços */}
           {response.enderecos && response.enderecos.length > 0 && (
             <SectionCard title="Endereços" icon={MapPin} count={response.enderecos.length}>
               <div className="space-y-3">
-                {response.enderecos.slice(0, 4).map((end, i) => (
+                {response.enderecos.map((end, i) => (
                   <div key={i} className={`flex items-start gap-3 ${i > 0 ? 'pt-3 border-t border-divider' : ''}`}>
                     <span className="text-xs font-semibold bg-muted px-2 py-1 rounded mt-0.5">
                       {end.classificacao || '—'}
@@ -70,6 +106,11 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
                       <p className="text-sm text-muted-foreground print:text-xs">
                         {end.bairro} • {end.cidade}/{end.uf} • CEP: {end.cep}
                       </p>
+                      {end.dataInformacao && (
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          Atualizado: {formatDate(end.dataInformacao)}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -82,15 +123,19 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
             {response.telefones && response.telefones.length > 0 && (
               <SectionCard title="Telefones" icon={Phone} count={response.telefones.length}>
                 <div className="space-y-2">
-                  {response.telefones.slice(0, 8).map((tel, i) => (
+                  {response.telefones.slice(0, 12).map((tel, i) => (
                     <div key={i} className="flex items-center justify-between py-1.5 border-b border-divider last:border-0">
                       <div className="flex items-center gap-3">
                         <span className="text-base font-medium print:text-sm">{tel.telefone}</span>
-                        <span className="text-xs text-muted-foreground">{tel.data}</span>
+                        {tel.data && tel.data !== 'Data Inválida' && (
+                          <span className="text-xs text-muted-foreground">{tel.data}</span>
+                        )}
                       </div>
-                      <span className="text-xs font-semibold bg-muted px-2 py-0.5 rounded">
-                        {tel.classificacao}
-                      </span>
+                      {tel.classificacao && (
+                        <span className="text-xs font-semibold bg-muted px-2 py-0.5 rounded">
+                          {tel.classificacao}
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -101,7 +146,7 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
                 <div className="space-y-2">
                   {response.emails.map((email, i) => (
                     <div key={i} className="py-1.5 border-b border-divider last:border-0">
-                      <p className="text-base font-medium break-all print:text-sm">{email.email}</p>
+                      <p className="text-sm font-medium break-all print:text-xs">{email.email}</p>
                       <span className="text-xs text-muted-foreground">{email.avaliacao}</span>
                     </div>
                   ))}
@@ -111,7 +156,7 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
           </div>
 
           {/* Veículos */}
-          <VehiclesSection placas={response.placas} />
+          <VehiclesSection placas={response.placas || response.veiculos} />
 
           {/* Planos e Serviços */}
           <PlansSection planos={response.planos} />
@@ -125,20 +170,32 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
               <div className="space-y-3">
                 {response.empregos.map((emp, i) => (
                   <div key={i} className={`${i > 0 ? 'pt-3 border-t border-divider' : ''}`}>
-                    <h4 className="font-semibold text-base print:text-sm">{emp.razao_social}</h4>
-                    {emp.descricao_cbo && <p className="text-sm text-muted-foreground">{emp.descricao_cbo}</p>}
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4 className="font-semibold text-base print:text-sm">{emp.razao_social}</h4>
+                        {emp.nome_fantasia && (
+                          <p className="text-sm text-muted-foreground">{emp.nome_fantasia}</p>
+                        )}
+                        {emp.descricao_cbo && (
+                          <p className="text-sm text-primary font-medium">{emp.descricao_cbo}</p>
+                        )}
+                      </div>
+                      {emp.salario && emp.salario !== 'R$ 0,00' && (
+                        <span className="font-bold text-success">{emp.salario}</span>
+                      )}
+                    </div>
                     <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-sm text-muted-foreground print:text-xs">
                       <span>Admissão: {formatDate(emp.data_admissao) || '—'}</span>
                       <span>Demissão: {formatDate(emp.data_demissao) || 'Atual'}</span>
-                      {emp.salario && emp.salario !== 'R$ 0,00' && (
-                        <span className="font-semibold text-foreground">{emp.salario}</span>
-                      )}
                     </div>
                   </div>
                 ))}
               </div>
             </SectionCard>
           )}
+
+          {/* RAIS */}
+          <RAISSection rais={response.rais} />
 
           {/* Sociedades */}
           {response.sociedades && response.sociedades.length > 0 && (
@@ -180,6 +237,9 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
                         <h4 className="font-semibold text-base print:text-sm">{mei.razaoSocial}</h4>
                         <p className="text-sm text-muted-foreground">CNPJ: {mei.cnpj}</p>
                         <p className="text-sm text-muted-foreground">{mei.descricaoCnaePrincipal}</p>
+                        {mei.dataAbertura && (
+                          <p className="text-xs text-muted-foreground mt-1">Abertura: {mei.dataAbertura}</p>
+                        )}
                       </div>
                       <span className={`text-xs font-semibold px-2 py-1 rounded ${
                         mei.situacaoCadastral === 'ATIVA' 
@@ -200,7 +260,7 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
 
           {/* Dívida Ativa */}
           {response.dividaAtiva && response.dividaAtiva.length > 0 && (
-            <SectionCard title="Dívida Ativa" icon={AlertTriangle} count={response.dividaAtiva.length}>
+            <SectionCard title="Dívida Ativa" icon={AlertTriangle} count={response.dividaAtiva.length} variant="danger">
               <div className="space-y-3">
                 {response.dividaAtiva.map((div, i) => (
                   <div key={i} className={`${i > 0 ? 'pt-3 border-t border-divider' : ''}`}>
@@ -230,34 +290,70 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
           <div className="grid grid-cols-2 gap-4 print:gap-3">
             {response.beneficiosAuxilios && response.beneficiosAuxilios.length > 0 && (
               <SectionCard title="Benefícios/Auxílios" icon={Gift} count={response.beneficiosAuxilios.length}>
-                {response.beneficiosAuxilios.map((b, i) => (
-                  <div key={i} className="flex justify-between items-center">
-                    <div>
-                      <p className="text-base font-semibold print:text-sm">{b.tipo_beneficio}</p>
-                      <p className="text-sm text-muted-foreground">{b.mes_inicio} - {b.mes_fim}</p>
-                      <p className="text-xs text-muted-foreground">{b.municipio}/{b.uf}</p>
+                <div className="space-y-3">
+                  {response.beneficiosAuxilios.map((b, i) => (
+                    <div key={i} className={`flex justify-between items-center ${i > 0 ? 'pt-2 border-t border-divider' : ''}`}>
+                      <div>
+                        <p className="text-base font-semibold print:text-sm">{b.tipo_beneficio}</p>
+                        <p className="text-sm text-muted-foreground">{b.mes_inicio} - {b.mes_fim}</p>
+                        <p className="text-xs text-muted-foreground">{b.municipio}/{b.uf}</p>
+                        {b.enquadramento && (
+                          <span className="text-xs bg-muted px-1.5 py-0.5 rounded">{b.enquadramento}</span>
+                        )}
+                      </div>
+                      <span className="text-lg font-bold text-green-600">{formatCurrency(b.valorTotalRecebido)}</span>
                     </div>
-                    <span className="text-lg font-bold text-green-600">{formatCurrency(b.valorTotalRecebido)}</span>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </SectionCard>
             )}
             {response.vacinas && response.vacinas.length > 0 && (
               <SectionCard title="Vacinas" icon={Syringe} count={response.vacinas.length}>
-                {response.vacinas.map((v, i) => (
-                  <div key={i} className={`${i > 0 ? 'pt-2 mt-2 border-t border-divider' : ''}`}>
-                    <p className="text-base font-semibold print:text-sm">{v.vacina_nome}</p>
-                    <p className="text-sm text-muted-foreground">{v.vacina_dose} • {formatDate(v.vacina_dt_aplicacao)}</p>
-                    <p className="text-xs text-muted-foreground">{v.estab_nome_fantasia}</p>
-                  </div>
-                ))}
+                <div className="space-y-2">
+                  {response.vacinas.map((v, i) => (
+                    <div key={i} className={`${i > 0 ? 'pt-2 border-t border-divider' : ''}`}>
+                      <p className="text-sm font-semibold print:text-xs">{v.vacina_nome}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {v.vacina_dose} • {formatDate(v.vacina_dt_aplicacao)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {v.vacina_fabricante} • Lote: {v.vacina_lote}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{v.estab_nome_fantasia}</p>
+                    </div>
+                  ))}
+                </div>
               </SectionCard>
             )}
           </div>
+
+          {/* Fotos extras se houver */}
+          {allFotos.length > 1 && (
+            <SectionCard title="Fotos" icon={ImageIcon} count={allFotos.length}>
+              <div className="flex flex-wrap gap-3">
+                {allFotos.map((foto, i) => (
+                  <img 
+                    key={i}
+                    src={foto.foto} 
+                    alt={`Foto ${i + 1}`}
+                    className="w-24 h-24 rounded-lg object-cover border border-border shadow-sm"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                ))}
+              </div>
+            </SectionCard>
+          )}
         </div>
 
         <footer className="mt-8 pt-4 border-t border-divider text-center text-sm text-muted-foreground print:mt-4">
           <p>Documento gerado automaticamente • Informações confidenciais</p>
+          {data.DATE && (
+            <p className="text-xs mt-1">
+              Data da consulta: {formatDate(data.DATE)} • Serviço: {data.SERVICE}
+            </p>
+          )}
         </footer>
       </div>
     </div>
