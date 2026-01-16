@@ -28,13 +28,13 @@ export const VehiclesSection = ({ placas }: VehiclesSectionProps) => {
               <div className="flex items-start gap-5">
                 {/* Fotos do veículo */}
                 {veiculo.fotosCarro && veiculo.fotosCarro.length > 0 && (
-                  <div className="flex-shrink-0 flex gap-2">
-                    {veiculo.fotosCarro.slice(0, 3).map((foto, fotoIndex) => (
+                  <div className="flex-shrink-0 flex flex-wrap gap-2 max-w-[300px]">
+                    {veiculo.fotosCarro.map((foto, fotoIndex) => (
                       <img
                         key={fotoIndex}
                         src={foto}
                         alt={`Foto ${fotoIndex + 1} do veículo ${veiculo.placa}`}
-                        className="w-24 h-18 object-cover rounded-lg border border-border shadow-sm print:w-20 print:h-14"
+                        className="w-20 h-14 object-cover rounded-lg border border-border shadow-sm print:w-16 print:h-12"
                         onError={(e) => {
                           (e.target as HTMLImageElement).style.display = 'none';
                         }}
