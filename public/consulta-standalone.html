@@ -1245,9 +1245,89 @@
       }
     };
 
-    // Initialize - Replace sampleData with your actual API response
-    // Example: document.getElementById('app').innerHTML = renderConsultation(apiResponse);
-    document.getElementById('app').innerHTML = renderConsultation(sampleData);
+    /**
+     * INTEGRAÇÃO COM API EXTERNA
+     * 
+     * Opção 1: Via URL (base64)
+     * Acesse: /consulta-standalone.html?data=BASE64_ENCODED_JSON
+     * 
+     * Exemplo de uso no seu projeto:
+     * const abrirConsulta = (dadosAPI) => {
+     *   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(dadosAPI))));
+     *   window.open(`/consulta-standalone.html?data=${encoded}`, '_blank');
+     * };
+     * 
+     * Opção 2: Via window.consultaData (antes de carregar a página)
+     * window.consultaData = dadosAPI;
+     * 
+     * Opção 3: Via postMessage (após a página carregar)
+     * const popup = window.open('/consulta-standalone.html', '_blank');
+     * popup.postMessage({ type: 'CONSULTA_DATA', data: dadosAPI }, '*');
+     * 
+     * Adicione ?autoprint=true para imprimir automaticamente
+     */
+
+    // Função para obter parâmetros da URL
+    function getUrlParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    // Função para decodificar dados base64
+    function decodeBase64Data(encoded) {
+      try {
+        const decoded = decodeURIComponent(escape(atob(encoded)));
+        return JSON.parse(decoded);
+      } catch (e) {
+        console.error('Erro ao decodificar dados:', e);
+        return null;
+      }
+    }
+
+    // Função principal de inicialização
+    function initConsulta() {
+      let data = null;
+
+      // Opção 1: Verificar dados na URL (base64)
+      const urlData = getUrlParam('data');
+      if (urlData) {
+        data = decodeBase64Data(urlData);
+        if (data) {
+          console.log('Dados carregados via URL');
+        }
+      }
+
+      // Opção 2: Verificar window.consultaData
+      if (!data && window.consultaData) {
+        data = window.consultaData;
+        console.log('Dados carregados via window.consultaData');
+      }
+
+      // Fallback: usar sampleData
+      if (!data) {
+        data = sampleData;
+        console.log('Usando dados de exemplo (sampleData)');
+      }
+
+      // Renderizar
+      document.getElementById('app').innerHTML = renderConsultation(data);
+
+      // Auto-print se solicitado
+      if (getUrlParam('autoprint') === 'true') {
+        setTimeout(() => window.print(), 500);
+      }
+    }
+
+    // Listener para postMessage (Opção 3)
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 'CONSULTA_DATA') {
+        window.consultaData = event.data.data;
+        initConsulta();
+      }
+    });
+
+    // Inicializar
+    initConsulta();
   </script>
 </body>
 </html>
