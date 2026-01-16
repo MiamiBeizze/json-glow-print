@@ -425,6 +425,35 @@ export interface Aeronave {
   modelo?: string;
   anoFabricacao?: string;
   situacao?: string;
+  categoria?: string;
+  proprietario?: string;
+  operador?: string;
+}
+
+// CNH - Carteira Nacional de Habilitação
+export interface CNH {
+  numero?: string;
+  registro?: string;
+  categoria?: string;
+  dataEmissao?: string;
+  dataValidade?: string;
+  primeiraHabilitacao?: string;
+  uf?: string;
+  situacao?: string;
+  restricoes?: string[];
+  observacoes?: string;
+}
+
+// Drone
+export interface Drone {
+  numero?: string;
+  fabricante?: string;
+  modelo?: string;
+  numeroSerie?: string;
+  peso?: string;
+  categoria?: string;
+  situacao?: string;
+  dataRegistro?: string;
 }
 
 export interface Processo {
@@ -531,7 +560,7 @@ export interface ServiceResponse {
   rgs?: RGDetalhado[];
   rais?: RAIS[];
   cin?: CIN;
-  cnh?: any;
+  cnh?: CNH;
   // Outros dados
   assinaturas?: any[];
   ppe?: any[];
@@ -551,7 +580,7 @@ export interface ServiceResponse {
   prouni?: any[];
   inssSiape?: any[];
   linkedin?: any[];
-  drones?: any[];
+  drones?: Drone[];
   ccf?: any[];
   viagens?: Viagem[];
   docsBase64?: DocBase64[];
