@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta Cadastral Completa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --background: hsl(210, 20%, 98%);
+      --foreground: hsl(215, 20%, 15%);
+      --card: hsl(0, 0%, 100%);
+      --card-foreground: hsl(215, 20%, 15%);
+      --primary: hsl(210, 70%, 55%);
+      --primary-foreground: hsl(0, 0%, 100%);
+      --secondary: hsl(210, 20%, 96%);
+      --secondary-foreground: hsl(215, 20%, 15%);
+      --muted: hsl(210, 15%, 94%);
+      --muted-foreground: hsl(215, 15%, 50%);
+      --success: hsl(142, 71%, 45%);
+      --warning: hsl(38, 92%, 50%);
+      --destructive: hsl(0, 75%, 55%);
+      --info: hsl(199, 85%, 50%);
+      --border: hsl(210, 20%, 90%);
+      --divider: hsl(210, 20%, 92%);
+      --header-gradient-start: hsl(210, 60%, 50%);
+      --header-gradient-end: hsl(210, 65%, 40%);
+      --section-header: hsl(210, 60%, 50%);
+      --data-label: hsl(215, 15%, 50%);
+      --data-value: hsl(215, 20%, 15%);
+      --empty-state: hsl(215, 15%, 60%);
+      --avatar-bg: hsl(210, 40%, 94%);
+      --avatar-border: hsl(210, 50%, 80%);
+      --card-highlight: hsl(210, 40%, 97%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: hsl(215, 25%, 20%);
+      color: var(--foreground);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .a4-container {
+      width: 210mm;
+      min-height: 297mm;
+      background: white;
+      margin: 0 auto;
+      padding: 20mm;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+      border-radius: 8px;
+    }
+
+    /* Print Styles */
+    @media print {
+      @page {
+        size: A4;
+        margin: 8mm;
+      }
+
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .a4-container {
+        width: 100%;
+        padding: 0;
+        box-shadow: none;
+        border-radius: 0;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .print-avoid-break {
+        page-break-inside: avoid;
+      }
+
+      * {
+        box-shadow: none !important;
+      }
+    }
+
+    /* Header */
+    .consultation-header {
+      background: linear-gradient(135deg, var(--header-gradient-start) 0%, var(--header-gradient-end) 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .header-photo {
+      width: 96px;
+      height: 96px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .header-avatar svg {
+      width: 48px;
+      height: 48px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .header-info {
+      flex: 1;
+    }
+
+    .header-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+
+    .header-icon {
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .header-name {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-top: 4px;
+    }
+
+    .header-cpf {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+    }
+
+    .header-date {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.1);
+      padding: 6px 12px;
+      border-radius: 8px;
+    }
+
+    .print-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      color: var(--foreground);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s;
+    }
+
+    .print-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Sections */
+    .sections-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .section-card {
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      page-break-inside: avoid;
+    }
+
+    .section-header {
+      background: var(--section-header);
+      color: white;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-header.danger {
+      background: var(--destructive);
+    }
+
+    .section-header.warning {
+      background: var(--warning);
+    }
+
+    .section-header.success {
+      background: var(--success);
+    }
+
+    .section-header.info {
+      background: var(--info);
+    }
+
+    .section-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-icon {
+      padding: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .section-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .section-title {
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: 0.3px;
+    }
+
+    .section-count {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+    }
+
+    .section-content {
+      padding: 20px;
+    }
+
+    /* Data Fields */
+    .data-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .data-grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .data-grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .data-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+    .data-field {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .data-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--data-label);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .data-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--data-value);
+    }
+
+    .data-value.empty {
+      color: var(--empty-state);
+    }
+
+    .data-value.highlight {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 9999px;
+    }
+
+    .badge-success {
+      background: hsla(142, 71%, 45%, 0.1);
+      color: var(--success);
+    }
+
+    .badge-danger {
+      background: hsla(0, 75%, 55%, 0.1);
+      color: var(--destructive);
+    }
+
+    .badge-warning {
+      background: hsla(38, 92%, 50%, 0.1);
+      color: var(--warning);
+    }
+
+    .badge-info {
+      background: hsla(199, 85%, 50%, 0.1);
+      color: var(--info);
+    }
+
+    .badge-neutral {
+      background: var(--muted);
+      color: var(--muted-foreground);
+    }
+
+    /* Status badges */
+    .status-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .status-active {
+      background: hsla(142, 71%, 45%, 0.1);
+      color: hsl(142, 71%, 35%);
+    }
+
+    .status-inactive {
+      background: var(--muted);
+      color: var(--muted-foreground);
+    }
+
+    /* Divider */
+    .divider {
+      border-top: 1px solid var(--divider);
+      padding-top: 16px;
+      margin-top: 16px;
+    }
+
+    /* Grid layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    /* Cards inside sections */
+    .inner-card {
+      background: var(--secondary);
+      opacity: 0.3;
+      background: hsla(210, 20%, 96%, 0.3);
+      border: 1px solid rgba(210, 220, 230, 0.5);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    /* Photo grids */
+    .photo-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .photo-item {
+      width: 80px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .photo-large {
+      width: 112px;
+      height: 112px;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Avatar placeholder */
+    .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--avatar-bg);
+      border: 1px solid var(--avatar-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .avatar-lg {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+    }
+
+    /* Item rows */
+    .item-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .item-row + .item-row {
+      border-top: 1px solid var(--divider);
+      padding-top: 12px;
+      margin-top: 12px;
+    }
+
+    .item-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .item-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--foreground);
+    }
+
+    .item-subtitle {
+      font-size: 13px;
+      color: var(--muted-foreground);
+      margin-top: 2px;
+    }
+
+    .item-meta {
+      font-size: 12px;
+      color: var(--muted-foreground);
+      margin-top: 4px;
+    }
+
+    .item-badge {
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--muted);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* Money values */
+    .money-value {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--success);
+    }
+
+    .money-danger {
+      color: var(--destructive);
+    }
+
+    .money-primary {
+      color: var(--primary);
+    }
+
+    /* Tags/chips */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--muted);
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: var(--foreground);
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    /* Footer */
+    .consultation-footer {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--divider);
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted-foreground);
+    }
+
+    /* Leaked credentials */
+    .leak-card {
+      background: hsla(0, 75%, 55%, 0.05);
+      border: 1px solid hsla(0, 75%, 55%, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 8px;
+    }
+
+    .leak-host {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--destructive);
+    }
+
+    .leak-date {
+      font-size: 10px;
+      color: var(--muted-foreground);
+    }
+
+    .leak-credential {
+      font-size: 12px;
+      font-family: monospace;
+      background: var(--muted);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Vehicle section */
+    .vehicle-photos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: 300px;
+      flex-shrink: 0;
+    }
+
+    /* Propensities */
+    .propensity-tag {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 8px;
+      border-radius: 9999px;
+    }
+
+    .propensity-positive {
+      background: hsla(142, 71%, 45%, 0.1);
+      color: var(--success);
+    }
+
+    .propensity-negative {
+      background: var(--muted);
+      color: var(--muted-foreground);
+    }
+
+    /* Family tree */
+    .family-tree {
+      padding: 16px 0;
+    }
+
+    .family-parents {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 24px;
+    }
+
+    .family-others {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .family-member {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .family-photo {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .family-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, hsla(210, 70%, 55%, 0.2), hsla(210, 70%, 55%, 0.4));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid white;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .family-grau {
+      font-size: 9px;
+      font-weight: 700;
+      background: var(--primary);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 9999px;
+      margin-top: -8px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .family-name {
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 8px;
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .family-meta {
+      font-size: 10px;
+      color: var(--muted-foreground);
+    }
+
+    /* Process cards */
+    .process-card {
+      background: hsla(210, 20%, 96%, 0.3);
+      border: 1px solid rgba(210, 220, 230, 0.5);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .process-number {
+      font-family: monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* LinkedIn card */
+    .linkedin-card {
+      background: linear-gradient(to right, hsl(210, 80%, 97%), hsl(210, 80%, 95%));
+      border: 1px solid hsla(210, 80%, 80%, 0.5);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .linkedin-icon {
+      background: hsl(210, 80%, 40%);
+      padding: 8px;
+      border-radius: 8px;
+    }
+
+    /* Utils */
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .items-start { align-items: flex-start; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-1 { gap: 4px; }
+    .gap-2 { gap: 8px; }
+    .gap-3 { gap: 12px; }
+    .gap-4 { gap: 16px; }
+    .gap-6 { gap: 24px; }
+    .flex-1 { flex: 1; }
+    .flex-shrink-0 { flex-shrink: 0; }
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+    .font-bold { font-weight: 700; }
+    .font-mono { font-family: monospace; }
+    .text-sm { font-size: 13px; }
+    .text-xs { font-size: 11px; }
+    .text-primary { color: var(--primary); }
+    .text-muted { color: var(--muted-foreground); }
+    .text-success { color: var(--success); }
+    .text-danger { color: var(--destructive); }
+    .mt-1 { margin-top: 4px; }
+    .mt-2 { margin-top: 8px; }
+    .mt-3 { margin-top: 12px; }
+    .mb-2 { margin-bottom: 8px; }
+    .mb-3 { margin-bottom: 12px; }
+    .truncate { 
+      overflow: hidden; 
+      text-overflow: ellipsis; 
+      white-space: nowrap; 
+    }
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Loading state */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+      font-size: 16px;
+      color: var(--muted-foreground);
+    }
+  </style>
+</head>
+<body>
+  <div class="a4-container" id="consultation-container">
+    <div class="loading">Carregando dados da consulta...</div>
+  </div>
+
+  <script>
+    // SVG Icons
+    const icons = {
+      user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+      fileText: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>',
+      calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>',
+      printer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>',
+      mapPin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
+      phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+      mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+      briefcase: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+      building: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>',
+      car: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>',
+      shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+      alertTriangle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>',
+      checkCircle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+      users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+      creditCard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>',
+      graduationCap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>',
+      wallet: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>',
+      heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>',
+      wifi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13a10 10 0 0 1 14 0"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M2 8.82a15 15 0 0 1 20 0"/><line x1="12" x2="12.01" y1="20" y2="20"/></svg>',
+      shoppingCart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>',
+      trendingUp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
+      gift: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect width="20" height="5" x="2" y="7"/><line x1="12" x2="12" y1="22" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>',
+      syringe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 2 4 4"/><path d="m17 7 3-3"/><path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.5 0-3.4L15 5"/><path d="m9 11 4 4"/><path d="m5 19-3 3"/><path d="m14 4 6 6"/></svg>',
+      plane: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>',
+      qrCode: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>',
+      landmark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>',
+      image: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>',
+      scale: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>',
+      linkedin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>',
+      receipt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>',
+      home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+      zap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+      shoppingBag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>',
+      package: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>',
+      radio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg>',
+    };
+
+    // Utility functions
+    function formatDate(date) {
+      if (!date) return '—';
+      try {
+        if (date.includes('/')) return date;
+        return new Date(date).toLocaleDateString('pt-BR');
+      } catch {
+        return date;
+      }
+    }
+
+    function formatCurrency(value) {
+      if (!value) return '—';
+      const num = parseFloat(String(value).replace(/[^\d.,]/g, '').replace(',', '.'));
+      if (isNaN(num)) return value;
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(num);
+    }
+
+    function formatCPF(cpf) {
+      if (!cpf) return null;
+      const cleaned = cpf.replace(/\D/g, '');
+      if (cleaned.length !== 11) return cpf;
+      return cleaned.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+
+    function createSectionCard(title, icon, content, options = {}) {
+      const { count, variant = 'default' } = options;
+      const headerClass = variant !== 'default' ? variant : '';
+      
+      return `
+        <div class="section-card print-avoid-break">
+          <div class="section-header ${headerClass}">
+            <div class="section-header-left">
+              <div class="section-icon">${icons[icon] || icons.fileText}</div>
+              <span class="section-title">${title}</span>
+            </div>
+            ${count !== undefined && count > 0 ? `<span class="section-count">${count}</span>` : ''}
+          </div>
+          <div class="section-content">
+            ${content}
+          </div>
+        </div>
+      `;
+    }
+
+    function createDataField(label, value, options = {}) {
+      const { highlight = false, size = 'md' } = options;
+      const displayValue = value || '—';
+      const valueClass = !value ? 'empty' : highlight ? 'highlight' : '';
+      
+      return `
+        <div class="data-field">
+          <span class="data-label">${label}</span>
+          <span class="data-value ${valueClass}">${displayValue}</span>
+        </div>
+      `;
+    }
+
+    function createBadge(text, variant = 'neutral') {
+      return `<span class="badge badge-${variant}">${text}</span>`;
+    }
+
+    // Main render function
+    function renderConsultation(data) {
+      const response = data.SERVICE_RESPONSE;
+      if (!response) {
+        return '<div class="loading">Dados não disponíveis</div>';
+      }
+
+      const cadastral = response.cadastral || {};
+      const allFotos = [...(response.fotos || []), ...(response.extraFotos || [])];
+      const bestPhoto = allFotos.sort((a, b) => (b.classificacao || 0) - (a.classificacao || 0))[0];
+      const photoUrl = bestPhoto?.foto || null;
+
+      const currentDate = new Date().toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      let html = '';
+
+      // Header
+      html += `
+        <header class="consultation-header">
+          <div class="header-content">
+            <div class="header-left">
+              ${photoUrl 
+                ? `<img src="${photoUrl}" class="header-photo" alt="Foto" onerror="this.style.display='none'">`
+                : `<div class="header-avatar">${icons.user}</div>`
+              }
+              <div class="header-info">
+                <div class="header-title-row">
+                  <div class="header-icon">${icons.fileText}</div>
+                  <span class="header-title">Consulta Cadastral</span>
+                </div>
+                <div class="header-name">${cadastral.nome || 'Nome não informado'}</div>
+                ${cadastral.cpfMask ? `<div class="header-cpf">CPF: ${cadastral.cpfMask}</div>` : ''}
+              </div>
+            </div>
+            <div class="header-right no-print">
+              <div class="header-date">
+                ${icons.calendar}
+                <span>${currentDate}</span>
+              </div>
+              <button class="print-btn" onclick="window.print()">
+                ${icons.printer}
+                Imprimir
+              </button>
+            </div>
+          </div>
+        </header>
+      `;
+
+      html += '<div class="sections-container">';
+
+      // Personal Data Section
+      if (cadastral && Object.keys(cadastral).length > 0) {
+        let personalContent = '';
+        
+        // Status badges
+        personalContent += '<div class="tags-container mb-3" style="padding-bottom: 16px; border-bottom: 1px solid var(--divider);">';
+        if (cadastral.indicativoCriminal !== undefined) {
+          personalContent += createBadge(
+            cadastral.indicativoCriminal 
+              ? `${icons.alertTriangle} Indicativo Criminal` 
+              : `${icons.checkCircle} Sem Indicativo Criminal`,
+            cadastral.indicativoCriminal ? 'danger' : 'success'
+          );
+        }
+        if (cadastral.flagObito2 !== undefined) {
+          personalContent += createBadge(
+            cadastral.flagObito2 ? 'Óbito Registrado' : 'Sem Óbito',
+            cadastral.flagObito2 ? 'danger' : 'success'
+          );
+        }
+        if (cadastral.classeSocial) {
+          personalContent += createBadge(`Classe ${cadastral.classeSocial}${cadastral.subClasseSocial ? '/' + cadastral.subClasseSocial : ''}`, 'info');
+        }
+        if (cadastral.signo) {
+          personalContent += createBadge(`${cadastral.signo} ${cadastral.signoChines ? '• ' + cadastral.signoChines : ''}`, 'neutral');
+        }
+        personalContent += '</div>';
+
+        // Main grid
+        personalContent += '<div class="data-grid data-grid-4">';
+        personalContent += createDataField('Data de Nascimento', cadastral.dataNasc);
+        personalContent += createDataField('Idade', cadastral.idade ? `${cadastral.idade} anos` : null);
+        personalContent += createDataField('Sexo', cadastral.sexo === 'M' ? 'Masculino' : cadastral.sexo === 'F' ? 'Feminino' : cadastral.sexo);
+        personalContent += createDataField('Naturalidade', cadastral.naturalidade !== 'n/a' ? cadastral.naturalidade : null);
+        personalContent += '</div>';
+
+        // Parents
+        personalContent += '<div class="grid-2 divider">';
+        personalContent += `<div class="flex gap-2">${icons.heart} ${createDataField('Nome da Mãe', cadastral.mae?.nome)}</div>`;
+        personalContent += `<div class="flex gap-2">${icons.user} ${createDataField('Nome do Pai', cadastral.pai?.nome !== 'N/a' ? cadastral.pai?.nome : null)}</div>`;
+        personalContent += '</div>';
+
+        // Socioeconomic
+        personalContent += '<div class="data-grid data-grid-4 divider">';
+        personalContent += createDataField('Renda Estimada', cadastral.renda, { highlight: true });
+        personalContent += createDataField('Escolaridade', cadastral.escolaridade);
+        personalContent += createDataField('CNS', cadastral.cns);
+        personalContent += createDataField('PIS', cadastral.pis);
+        personalContent += '</div>';
+
+        // Documents
+        if (cadastral.rg?.numero !== 'n/a' || cadastral.ctps?.numero || cadastral.tituloEleitor?.numero) {
+          personalContent += '<div class="data-grid data-grid-3 divider">';
+          if (cadastral.rg?.numero !== 'n/a') {
+            personalContent += createDataField('RG', `${cadastral.rg?.numero || ''} ${cadastral.rg?.orgao !== 'n/a' ? `(${cadastral.rg?.orgao}${cadastral.rg?.uf ? '/' + cadastral.rg.uf : ''})` : ''}`);
+          }
+          if (cadastral.ctps?.numero) {
+            personalContent += createDataField('CTPS', `${cadastral.ctps.numero} / Série ${cadastral.ctps.serie}`);
+          }
+          if (cadastral.tituloEleitor?.numero) {
+            personalContent += createDataField('Título de Eleitor', `${cadastral.tituloEleitor.numero} - Zona ${cadastral.tituloEleitor.zona} / Seção ${cadastral.tituloEleitor.secao}`);
+          }
+          personalContent += '</div>';
+        }
+
+        html += createSectionCard('Dados Pessoais', 'user', personalContent);
+      }
+
+      // Leaked Credentials (max 4)
+      if (response.credenciaisVazadas?.length > 0) {
+        const totalLeaks = response.credenciaisVazadas.reduce((acc, c) => acc + (c.resultados?.length || 0), 0);
+        let leakContent = '';
+        
+        response.credenciaisVazadas.slice(0, 4).forEach(cred => {
+          leakContent += `
+            <div class="mb-3">
+              <div class="flex gap-2 items-center mb-2">
+                ${createBadge(cred.tipo, 'danger')}
+                <span class="font-mono text-sm text-muted">${cred.valor}</span>
+              </div>
+              ${(cred.resultados || []).slice(0, 2).map(r => `
+                <div class="leak-card">
+                  <div class="flex justify-between mb-2">
+                    <span class="leak-host">${r.host}</span>
+                    <span class="leak-date">${r.file_date || ''}</span>
+                  </div>
+                  <div class="grid-2 gap-2">
+                    <div>
+                      <span class="text-xs text-muted" style="text-transform: uppercase;">Login</span>
+                      <div class="leak-credential">${r.login}</div>
+                    </div>
+                    <div>
+                      <span class="text-xs text-muted" style="text-transform: uppercase;">Senha</span>
+                      <div class="leak-credential font-bold">${r.password}</div>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        });
+
+        html += createSectionCard('Credenciais Vazadas', 'shield', leakContent, { count: totalLeaks, variant: 'danger' });
+      }
+
+      // Professions
+      if (response.profissoes?.length > 0) {
+        let profContent = '<div class="tags-container">';
+        response.profissoes.forEach(prof => {
+          profContent += `<div class="tag">${prof.descricao}${prof.cbo ? ` (CBO: ${prof.cbo})` : ''}</div>`;
+        });
+        profContent += '</div>';
+        html += createSectionCard('Profissões', 'briefcase', profContent, { count: response.profissoes.length });
+      }
+
+      // RGs
+      if (response.rgs?.length > 0) {
+        let rgContent = '';
+        response.rgs.forEach((rg, i) => {
+          if (i > 0) rgContent += '<div class="divider"></div>';
+          rgContent += '<div class="data-grid data-grid-4">';
+          rgContent += createDataField('Número RG', rg.rg, { highlight: true });
+          rgContent += createDataField('Órgão Emissor', rg.orgaorg);
+          rgContent += createDataField('UF', rg.ufrg);
+          rgContent += createDataField('Data Emissão', rg.emissaorg ? formatDate(rg.emissaorg) : null);
+          rgContent += '</div>';
+        });
+        html += createSectionCard('RGs Detalhados', 'creditCard', rgContent, { count: response.rgs.length });
+      }
+
+      // Family Tree
+      if (response.parentes?.length > 0) {
+        let familyContent = '<div class="family-tree">';
+        
+        // Parents
+        const parents = response.parentes.filter(p => 
+          p.grau?.toLowerCase().includes('mae') || 
+          p.grau?.toLowerCase().includes('mãe') || 
+          p.grau?.toLowerCase().includes('pai')
+        );
+        
+        const others = response.parentes.filter(p => !parents.includes(p));
+        
+        if (parents.length > 0 || cadastral.mae?.nome || cadastral.pai?.nome) {
+          familyContent += '<div class="family-parents">';
+          // Mãe
+          const mae = parents.find(p => p.grau?.toLowerCase().includes('mae') || p.grau?.toLowerCase().includes('mãe'));
+          familyContent += `
+            <div class="family-member">
+              ${mae?.foto 
+                ? `<img src="${mae.foto}" class="family-photo" alt="Mãe" onerror="this.outerHTML='<div class=family-avatar>${icons.user}</div>'">` 
+                : `<div class="family-avatar">${icons.user}</div>`
+              }
+              <span class="family-grau">Mãe</span>
+              <span class="family-name">${mae?.nome || cadastral.mae?.nome || 'N/A'}</span>
+            </div>
+          `;
+          familyContent += `<div style="display:flex;align-items:center;color:hsl(340,80%,70%);">${icons.heart}</div>`;
+          // Pai
+          const pai = parents.find(p => p.grau?.toLowerCase().includes('pai'));
+          familyContent += `
+            <div class="family-member">
+              ${pai?.foto 
+                ? `<img src="${pai.foto}" class="family-photo" alt="Pai" onerror="this.outerHTML='<div class=family-avatar>${icons.user}</div>'">` 
+                : `<div class="family-avatar">${icons.user}</div>`
+              }
+              <span class="family-grau">Pai</span>
+              <span class="family-name">${pai?.nome || cadastral.pai?.nome || 'N/A'}</span>
+            </div>
+          `;
+          familyContent += '</div>';
+        }
+        
+        if (others.length > 0) {
+          familyContent += '<div class="family-others">';
+          others.forEach(p => {
+            familyContent += `
+              <div class="family-member">
+                ${p.foto 
+                  ? `<img src="${p.foto}" class="family-photo" alt="${p.grau}" onerror="this.outerHTML='<div class=family-avatar>${icons.user}</div>'">` 
+                  : `<div class="family-avatar">${icons.user}</div>`
+                }
+                <span class="family-grau">${p.grau || 'Parente'}</span>
+                <span class="family-name">${(p.nome || '').split(' ').slice(0, 2).join(' ')}</span>
+                ${p.idade ? `<span class="family-meta">${p.idade} anos</span>` : ''}
+                ${p.renda ? `<span class="family-meta text-success">${p.renda}</span>` : ''}
+              </div>
+            `;
+          });
+          familyContent += '</div>';
+        }
+        
+        familyContent += '</div>';
+        html += createSectionCard('Árvore Familiar', 'users', familyContent, { count: response.parentes.length });
+      }
+
+      // Addresses
+      if (response.enderecos?.length > 0) {
+        let addressContent = '';
+        response.enderecos.forEach((end, i) => {
+          if (i > 0) addressContent += '<div class="divider"></div>';
+          addressContent += `
+            <div class="item-row">
+              <span class="item-badge">${end.classificacao || '—'}</span>
+              <div class="item-content">
+                <div class="item-title">${end.endereco || end.logradouro}, ${end.numero}${end.complemento ? ' - ' + end.complemento : ''}</div>
+                <div class="item-subtitle">${end.bairro} • ${end.cidade}/${end.uf} • CEP: ${end.cep}</div>
+                ${end.dataInformacao ? `<div class="item-meta">Atualizado: ${formatDate(end.dataInformacao)}</div>` : ''}
+              </div>
+            </div>
+          `;
+        });
+        html += createSectionCard('Endereços', 'mapPin', addressContent, { count: response.enderecos.length });
+      }
+
+      // Phones and Emails (side by side)
+      if (response.telefones?.length > 0 || response.emails?.length > 0) {
+        html += '<div class="grid-2">';
+        
+        if (response.telefones?.length > 0) {
+          let phoneContent = '';
+          response.telefones.slice(0, 12).forEach((tel, i) => {
+            if (i > 0) phoneContent += '<div style="border-top:1px solid var(--divider);padding-top:8px;margin-top:8px;"></div>';
+            phoneContent += `
+              <div class="flex justify-between items-center">
+                <div class="flex gap-2 items-center">
+                  <span class="font-bold">${tel.telefone}</span>
+                  ${tel.data && tel.data !== 'Data Inválida' ? `<span class="text-xs text-muted">${tel.data}</span>` : ''}
+                </div>
+                ${tel.classificacao ? `<span class="item-badge">${tel.classificacao}</span>` : ''}
+              </div>
+            `;
+          });
+          html += createSectionCard('Telefones', 'phone', phoneContent, { count: response.telefones.length });
+        }
+        
+        if (response.emails?.length > 0) {
+          let emailContent = '';
+          response.emails.forEach((email, i) => {
+            if (i > 0) emailContent += '<div style="border-top:1px solid var(--divider);padding-top:8px;margin-top:8px;"></div>';
+            emailContent += `
+              <div>
+                <div class="item-title" style="word-break:break-all;">${email.email}</div>
+                <div class="item-meta">${email.avaliacao || ''}</div>
+              </div>
+            `;
+          });
+          html += createSectionCard('E-mails', 'mail', emailContent, { count: response.emails.length });
+        }
+        
+        html += '</div>';
+      }
+
+      // CNH
+      if (response.cnh && (response.cnh.numero || response.cnh.registro || response.cnh.categoria)) {
+        let cnhContent = `
+          <div class="flex gap-3 items-center mb-3">
+            <div style="padding:12px;background:hsla(210,70%,55%,0.1);border-radius:12px;">${icons.creditCard}</div>
+            <div>
+              <div class="text-xs text-muted" style="text-transform:uppercase;">Número do Registro</div>
+              <div class="font-mono text-primary font-bold" style="font-size:18px;">${response.cnh.registro || response.cnh.numero || '—'}</div>
+            </div>
+            <div style="margin-left:auto;">
+              ${response.cnh.situacao ? createBadge(response.cnh.situacao, response.cnh.situacao.toLowerCase().includes('regular') ? 'success' : 'danger') : ''}
+            </div>
+          </div>
+          <div class="data-grid data-grid-4">
+            ${createDataField('Categoria', response.cnh.categoria, { highlight: true })}
+            ${createDataField('UF', response.cnh.uf)}
+            ${createDataField('Data Emissão', formatDate(response.cnh.dataEmissao))}
+            ${createDataField('Validade', formatDate(response.cnh.dataValidade))}
+          </div>
+        `;
+        html += createSectionCard('CNH - Carteira Nacional de Habilitação', 'car', cnhContent);
+      }
+
+      // Vehicles
+      const vehicles = response.placas || response.veiculos;
+      if (vehicles?.length > 0) {
+        let vehicleContent = '';
+        vehicles.forEach((v, i) => {
+          if (i > 0) vehicleContent += '<div class="divider"></div>';
+          vehicleContent += `
+            <div class="flex gap-4">
+              ${v.fotosCarro?.length > 0 ? `
+                <div class="vehicle-photos">
+                  ${v.fotosCarro.map((foto, fi) => `
+                    <img src="${foto}" class="photo-item" alt="Foto ${fi+1}" onerror="this.style.display='none'">
+                  `).join('')}
+                </div>
+              ` : ''}
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="font-bold" style="font-size:16px;">${v.modelo}</span>
+                  ${v.placa ? `<span class="font-mono item-badge">${v.placa}</span>` : ''}
+                </div>
+                <div class="data-grid data-grid-4">
+                  ${createDataField('Renavam', v.renavam)}
+                  ${createDataField('Chassi', v.chassi)}
+                  ${createDataField('Ano Fab./Mod.', v.anoFab && v.anoModelo ? `${v.anoFab}/${v.anoModelo}` : null)}
+                  ${createDataField('Combustível', v.combustivel)}
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        html += createSectionCard('Veículos', 'car', vehicleContent, { count: vehicles.length });
+      }
+
+      // Plans
+      if (response.planos?.length > 0) {
+        let planContent = '';
+        response.planos.forEach((plano, i) => {
+          if (i > 0) planContent += '<div class="divider"></div>';
+          planContent += `
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="item-title">${plano.empresa}</div>
+                <div class="item-subtitle">${plano.plano}</div>
+                ${plano.endereco ? `<div class="item-meta">${plano.endereco}, ${plano.numero} - ${plano.cidade}/${plano.uf}</div>` : ''}
+              </div>
+              <div class="text-right">
+                <span class="status-badge ${plano.statusProduto === 'Ativo' ? 'status-active' : 'status-inactive'}">${plano.statusProduto}</span>
+                ${plano.dataProduto ? `<div class="item-meta">${plano.dataProduto}</div>` : ''}
+              </div>
+            </div>
+          `;
+        });
+        html += createSectionCard('Planos e Serviços', 'wifi', planContent, { count: response.planos.length });
+      }
+
+      // Related by Address
+      if (response.relacionadosPorEndereco?.length > 0) {
+        let relContent = '<div class="grid-2">';
+        response.relacionadosPorEndereco.forEach(rel => {
+          relContent += `
+            <div class="inner-card flex gap-3">
+              ${rel.foto 
+                ? `<img src="${rel.foto}" class="avatar-lg" alt="${rel.nome}" onerror="this.outerHTML='<div class=avatar>${icons.user}</div>'">` 
+                : `<div class="avatar">${icons.user}</div>`
+              }
+              <div class="flex-1">
+                <div class="item-title truncate">${rel.nome || 'Nome não informado'}</div>
+                ${rel.cpf ? `<div class="item-meta">CPF: ${formatCPF(rel.cpf)}</div>` : ''}
+                <div class="item-meta">${rel.idade ? rel.idade + ' anos' : ''} ${rel.sexo ? '• ' + (rel.sexo === 'M' ? 'Masculino' : 'Feminino') : ''}</div>
+                ${rel.profissao ? `<div class="item-meta truncate">${rel.profissao}</div>` : ''}
+                ${rel.renda ? `<div class="money-value">${rel.renda}</div>` : ''}
+              </div>
+            </div>
+          `;
+        });
+        relContent += '</div>';
+        html += createSectionCard('Relacionados por Endereço', 'mapPin', relContent, { count: response.relacionadosPorEndereco.length });
+      }
+
+      // Employment History
+      if (response.empregos?.length > 0) {
+        let empContent = '';
+        response.empregos.forEach((emp, i) => {
+          if (i > 0) empContent += '<div class="divider"></div>';
+          empContent += `
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="item-title">${emp.razao_social}</div>
+                ${emp.nome_fantasia ? `<div class="item-subtitle">${emp.nome_fantasia}</div>` : ''}
+                ${emp.descricao_cbo ? `<div class="text-primary font-bold text-sm">${emp.descricao_cbo}</div>` : ''}
+              </div>
+              ${emp.salario && emp.salario !== 'R$ 0,00' ? `<span class="money-value">${emp.salario}</span>` : ''}
+            </div>
+            <div class="item-meta">Admissão: ${formatDate(emp.data_admissao)} • Demissão: ${emp.data_demissao ? formatDate(emp.data_demissao) : 'Atual'}</div>
+          `;
+        });
+        html += createSectionCard('Histórico de Empregos', 'briefcase', empContent, { count: response.empregos.length });
+      }
+
+      // RAIS
+      if (response.rais?.length > 0) {
+        let raisContent = '';
+        response.rais.forEach((r, i) => {
+          if (i > 0) raisContent += '<div class="divider"></div>';
+          raisContent += `
+            <div class="item-title mb-2">${r.razao_social || r.nome_fantasia}</div>
+            <div class="data-grid data-grid-4">
+              ${createDataField('CNPJ', r.cnpj ? String(r.cnpj).padStart(14, '0').replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5') : null)}
+              ${createDataField('Ano Base', r.ano_base)}
+              ${createDataField('Admissão', formatDate(r.admissao))}
+              ${createDataField('Demissão', formatDate(r.demissao_tratada))}
+            </div>
+          `;
+        });
+        html += createSectionCard('Histórico RAIS', 'fileText', raisContent, { count: response.rais.length });
+      }
+
+      // Sociedades
+      if (response.sociedades?.length > 0) {
+        let socContent = '';
+        response.sociedades.forEach((soc, i) => {
+          if (i > 0) socContent += '<div class="divider"></div>';
+          socContent += `
+            <div class="flex justify-between items-start gap-2">
+              <div>
+                <div class="item-title">${soc.razao_social}</div>
+                <div class="item-subtitle">CNPJ: ${soc.cnpj}</div>
+              </div>
+              <span class="status-badge ${soc.situacao_cadastral === 'ATIVA' ? 'status-active' : ''}" style="${soc.situacao_cadastral !== 'ATIVA' ? 'background:hsl(38,92%,90%);color:hsl(38,70%,40%);' : ''}">${soc.situacao_cadastral}</span>
+            </div>
+            <div class="item-meta">${soc.qualificacao_socio_descricao} • Entrada: ${soc.dt_entrada}</div>
+          `;
+        });
+        html += createSectionCard('Sociedades', 'building', socContent, { count: response.sociedades.length });
+      }
+
+      // MEI
+      if (response.meiDetalhado?.length > 0) {
+        let meiContent = '';
+        response.meiDetalhado.forEach((mei, i) => {
+          if (i > 0) meiContent += '<div class="divider"></div>';
+          meiContent += `
+            <div class="flex justify-between items-start gap-2">
+              <div>
+                <div class="item-title">${mei.razaoSocial}</div>
+                <div class="item-subtitle">CNPJ: ${mei.cnpj}</div>
+                <div class="item-meta">${mei.descricaoCnaePrincipal}</div>
+                ${mei.dataAbertura ? `<div class="item-meta">Abertura: ${mei.dataAbertura}</div>` : ''}
+              </div>
+              <span class="status-badge ${mei.situacaoCadastral === 'ATIVA' ? 'status-active' : ''}" style="${mei.situacaoCadastral !== 'ATIVA' ? 'background:hsl(0,75%,95%);color:hsl(0,70%,50%);' : ''}">${mei.situacaoCadastral}</span>
+            </div>
+            ${mei.descricaoMotivoSituacao ? `<div class="item-meta">${mei.descricaoMotivoSituacao}</div>` : ''}
+          `;
+        });
+        html += createSectionCard('MEI', 'shoppingBag', meiContent, { count: response.meiDetalhado.length });
+      }
+
+      // Dívida Ativa
+      if (response.dividaAtiva?.length > 0) {
+        let dividaContent = '';
+        response.dividaAtiva.forEach((div, i) => {
+          if (i > 0) dividaContent += '<div class="divider"></div>';
+          dividaContent += `
+            <div class="flex justify-between items-start">
+              <div class="flex-1">
+                <div class="item-title">${div.receita_principal}</div>
+                <div class="item-subtitle line-clamp-2">${div.situacao_inscricao}</div>
+                <div class="item-meta">Inscrição: ${formatDate(div.data_inscricao)} • ${div.indicador_ajuizado === 'NAO' ? 'Não Ajuizado' : 'Ajuizado'}</div>
+              </div>
+              <span class="money-value money-danger" style="font-size:18px;">${formatCurrency(div.valor_consolidado)}</span>
+            </div>
+          `;
+        });
+        html += createSectionCard('Dívida Ativa', 'alertTriangle', dividaContent, { count: response.dividaAtiva.length, variant: 'danger' });
+      }
+
+      // Processes
+      if (response.processos?.length > 0 || response.vinculosPorProcessos?.length > 0) {
+        let procContent = '';
+        
+        if (response.processos?.length > 0) {
+          procContent += `<h4 class="text-sm text-muted mb-2" style="text-transform:uppercase;font-weight:600;">${icons.fileText} Processos (${response.processos.length})</h4>`;
+          response.processos.forEach((proc, i) => {
+            procContent += `
+              <div class="process-card mb-3">
+                <div class="flex justify-between items-start gap-2 mb-2">
+                  <div>
+                    <span class="process-number">${proc.numero}</span>
+                    ${proc.polo ? createBadge(proc.polo, proc.polo.toLowerCase().includes('autor') ? 'info' : proc.polo.toLowerCase().includes('réu') ? 'danger' : 'neutral') : ''}
+                    ${proc.tribunal ? `<div class="item-subtitle mt-1">${proc.tribunal}</div>` : ''}
+                  </div>
+                  ${proc.situacao ? createBadge(proc.situacao, proc.situacao.toLowerCase().includes('arquivado') ? 'neutral' : 'warning') : ''}
+                </div>
+                <div class="data-grid data-grid-3">
+                  ${createDataField('Vara', proc.vara)}
+                  ${createDataField('Classe', proc.classe)}
+                  ${createDataField('Distribuição', formatDate(proc.dataDistribuicao))}
+                </div>
+                ${proc.assunto ? `<div class="divider"><span class="text-xs text-muted" style="text-transform:uppercase;">Assunto</span><div class="text-sm">${proc.assunto}</div></div>` : ''}
+              </div>
+            `;
+          });
+        }
+        
+        html += createSectionCard('Processos Judiciais', 'scale', procContent, { count: (response.processos?.length || 0) + (response.vinculosPorProcessos?.length || 0), variant: 'warning' });
+      }
+
+      // Online Purchases
+      if (response.comprasOnline?.length > 0) {
+        let purchaseContent = '';
+        response.comprasOnline.forEach((compra, i) => {
+          purchaseContent += `
+            <div class="inner-card flex gap-3 mb-2">
+              <div style="padding:8px;background:hsla(210,70%,55%,0.1);border-radius:8px;">${icons.package}</div>
+              <div class="flex-1">
+                <div class="item-title line-clamp-2">${compra.product}</div>
+                ${compra.detail ? `<div class="item-meta">${compra.detail}</div>` : ''}
+                <div class="flex justify-between items-center mt-1">
+                  <span class="item-meta">Qtd: ${compra.quantity} • ${formatDate(compra.created_at)}</span>
+                  <span class="money-value">${formatCurrency(compra.price)}</span>
+                </div>
+                ${compra.email ? `<div class="item-meta">Email: ${compra.email}</div>` : ''}
+              </div>
+            </div>
+          `;
+        });
+        html += createSectionCard('Compras Online', 'shoppingCart', purchaseContent, { count: response.comprasOnline.length });
+      }
+
+      // Propensities
+      if (response.propensoes) {
+        const propensityLabels = {
+          turismo: 'Turismo', luxo: 'Produtos de Luxo', tvcabo: 'TV a Cabo', bandalarga: 'Banda Larga',
+          credimob: 'Crédito Imobiliário', comprainternet: 'Compra pela Internet', consignado: 'Crédito Consignado',
+          clipremium: 'Cliente Premium', mobile: 'Mobile', segauto: 'Seguro Auto', finanauto: 'Financ. Auto',
+          credpessoal: 'Crédito Pessoal', investidor: 'Investidor', tomador: 'Tomador', prevprivada: 'Previdência Privada',
+          internetbanking: 'Internet Banking', cartaocredito: 'Cartão de Crédito', cartaoprime: 'Cartão Prime',
+          varioscartoes: 'Vários Cartões', segsaude: 'Seguro Saúde', segvida: 'Seguro Vida', segcasa: 'Seguro Casa',
+          celpos: 'Celular Pós', celpre: 'Celular Pré', highuser: 'Heavy User', milhas: 'Programa de Milhas',
+          cinefilo: 'Cinéfilo', casapropria: 'Casa Própria', transportepublico: 'Transporte Público',
+          jogaonline: 'Jogos Online', videogame: 'Videogame', leitordigital: 'Leitor Digital',
+          cacadesconto: 'Caça Desconto', adiantado: 'Paga Adiantado', fitness: 'Fitness'
+        };
+        
+        const entries = Object.entries(response.propensoes).filter(([key]) => key !== 'cpf' && key !== 'csb8' && key !== 'csb8_faixa' && propensityLabels[key]);
+        const positives = entries.filter(([_, v]) => v === 1);
+        const negatives = entries.filter(([_, v]) => v === 0);
+        
+        let propContent = '';
+        
+        if (response.propensoes.csb8_faixa) {
+          propContent += `
+            <div style="background:var(--card-highlight);border-radius:8px;padding:12px;text-align:center;margin-bottom:16px;">
+              <span class="text-muted text-sm">Score CSB8: </span>
+              ${createBadge(`${response.propensoes.csb8} - ${response.propensoes.csb8_faixa}`, response.propensoes.csb8_faixa === 'ALTO' ? 'success' : response.propensoes.csb8_faixa === 'MEDIO' ? 'warning' : 'neutral')}
+            </div>
+          `;
+        }
+        
+        if (positives.length > 0) {
+          propContent += `<div class="mb-3"><h4 class="text-xs text-muted mb-2" style="text-transform:uppercase;font-weight:600;">${icons.checkCircle} Propenso a</h4><div class="tags-container">`;
+          positives.forEach(([key]) => {
+            propContent += `<span class="propensity-tag propensity-positive">${propensityLabels[key]}</span>`;
+          });
+          propContent += '</div></div>';
+        }
+        
+        if (negatives.length > 0) {
+          propContent += `<div><h4 class="text-xs text-muted mb-2" style="text-transform:uppercase;font-weight:600;">${icons.alertTriangle} Não propenso a</h4><div class="tags-container">`;
+          negatives.forEach(([key]) => {
+            propContent += `<span class="propensity-tag propensity-negative">${propensityLabels[key]}</span>`;
+          });
+          propContent += '</div></div>';
+        }
+        
+        html += createSectionCard('Propensões de Consumo', 'trendingUp', propContent);
+      }
+
+      // Benefits and Vaccines (side by side)
+      if (response.beneficiosAuxilios?.length > 0 || response.vacinas?.length > 0) {
+        html += '<div class="grid-2">';
+        
+        if (response.beneficiosAuxilios?.length > 0) {
+          let benefitContent = '';
+          response.beneficiosAuxilios.forEach((b, i) => {
+            if (i > 0) benefitContent += '<div class="divider"></div>';
+            benefitContent += `
+              <div class="flex justify-between items-center">
+                <div>
+                  <div class="item-title">${b.tipo_beneficio}</div>
+                  <div class="item-meta">${b.mes_inicio} - ${b.mes_fim}</div>
+                  <div class="item-meta">${b.municipio}/${b.uf}</div>
+                  ${b.enquadramento ? `<span class="tag text-xs">${b.enquadramento}</span>` : ''}
+                </div>
+                <span class="money-value">${formatCurrency(b.valorTotalRecebido)}</span>
+              </div>
+            `;
+          });
+          html += createSectionCard('Benefícios/Auxílios', 'gift', benefitContent, { count: response.beneficiosAuxilios.length });
+        }
+        
+        if (response.vacinas?.length > 0) {
+          let vaccineContent = '';
+          response.vacinas.forEach((v, i) => {
+            if (i > 0) vaccineContent += '<div class="divider"></div>';
+            vaccineContent += `
+              <div>
+                <div class="item-title">${v.vacina_nome}</div>
+                <div class="item-meta">${v.vacina_dose} • ${formatDate(v.vacina_dt_aplicacao)}</div>
+                <div class="item-meta">${v.vacina_fabricante} • Lote: ${v.vacina_lote}</div>
+                <div class="item-meta">${v.estab_nome_fantasia}</div>
+              </div>
+            `;
+          });
+          html += createSectionCard('Vacinas', 'syringe', vaccineContent, { count: response.vacinas.length });
+        }
+        
+        html += '</div>';
+      }
+
+      // PIX Keys
+      if (response.chavesPix?.length > 0) {
+        const getPixEmoji = (tipo) => {
+          switch (tipo?.toLowerCase()) {
+            case 'cpf': case 'cnpj': return '🪪';
+            case 'email': return '📧';
+            case 'telefone': case 'celular': return '📱';
+            case 'aleatoria': case 'evp': return '🔑';
+            default: return '💳';
+          }
+        };
+        
+        let pixContent = '';
+        response.chavesPix.forEach((pix, i) => {
+          pixContent += `
+            <div class="inner-card flex justify-between items-center mb-2">
+              <div class="flex gap-3 items-center">
+                <span style="font-size:24px;">${getPixEmoji(pix.tipo)}</span>
+                <div>
+                  <div class="item-title">${pix.tipo?.toUpperCase()}</div>
+                  <div class="font-mono text-primary" style="word-break:break-all;">${pix.chave}</div>
+                  ${pix.banco ? `<div class="item-meta">${pix.banco}</div>` : ''}
+                </div>
+              </div>
+              <div class="text-right">
+                ${pix.status ? createBadge(pix.status, pix.status === 'ATIVA' ? 'success' : 'neutral') : ''}
+                ${pix.dataCriacao ? `<div class="item-meta">${pix.dataCriacao}</div>` : ''}
+              </div>
+            </div>
+          `;
+        });
+        html += createSectionCard('Chaves PIX', 'qrCode', pixContent, { count: response.chavesPix.length });
+      }
+
+      // Bank Accounts
+      if (response.contasBancos?.length > 0) {
+        let bankContent = '';
+        response.contasBancos.forEach((conta, i) => {
+          bankContent += `
+            <div class="inner-card mb-3">
+              <div class="flex justify-between items-start mb-2">
+                <div class="flex gap-2 items-center">
+                  ${icons.building}
+                  <div>
+                    <div class="item-title">${conta.banco}</div>
+                    ${conta.codigoBanco ? `<div class="item-meta">Código: ${conta.codigoBanco}</div>` : ''}
+                  </div>
+                </div>
+                ${conta.status ? createBadge(conta.status, conta.status === 'ATIVA' ? 'success' : 'neutral') : ''}
+              </div>
+              <div class="data-grid data-grid-4">
+                ${createDataField('Agência', conta.agencia)}
+                ${createDataField('Conta', conta.conta)}
+                ${createDataField('Tipo', conta.tipoConta)}
+                ${createDataField('Abertura', formatDate(conta.dataAbertura))}
+              </div>
+            </div>
+          `;
+        });
+        html += createSectionCard('Contas Bancárias', 'landmark', bankContent, { count: response.contasBancos.length });
+      }
+
+      // Travel History
+      if (response.viagens?.length > 0) {
+        let travelContent = '';
+        response.viagens.forEach((viagem, i) => {
+          travelContent += `
+            <div class="inner-card mb-2">
+              <div class="flex justify-between items-start mb-2">
+                <div class="flex gap-3 items-center">
+                  <div style="padding:8px;background:hsla(210,70%,55%,0.1);border-radius:8px;">${icons.plane}</div>
+                  <div>
+                    <span class="font-bold">${viagem.origem || '—'}</span>
+                    <span class="text-muted"> → </span>
+                    <span class="text-primary font-bold">${viagem.destino}</span>
+                    ${viagem.companhia ? `<div class="item-meta">${viagem.companhia}</div>` : ''}
+                  </div>
+                </div>
+                ${viagem.status ? createBadge(viagem.status, viagem.status === 'REALIZADA' ? 'success' : viagem.status === 'CANCELADA' ? 'danger' : 'info') : ''}
+              </div>
+              <div class="flex gap-3 text-sm text-muted">
+                ${viagem.dataIda ? `<span>${icons.calendar} Ida: ${formatDate(viagem.dataIda)}</span>` : ''}
+                ${viagem.dataVolta ? `<span>${icons.calendar} Volta: ${formatDate(viagem.dataVolta)}</span>` : ''}
+                ${viagem.tipoViagem ? `<span class="tag">${viagem.tipoViagem}</span>` : ''}
+                ${viagem.localizador ? `<span class="font-mono tag">Loc: ${viagem.localizador}</span>` : ''}
+              </div>
+            </div>
+          `;
+        });
+        html += createSectionCard('Histórico de Viagens', 'plane', travelContent, { count: response.viagens.length });
+      }
+
+      // Photos and Documents
+      const allPhotos = [...(response.fotos || []), ...(response.extraFotos || [])].filter(f => f.foto);
+      const allDocs = (response.docsBase64 || []).filter(d => d.base64 || d.url);
+      
+      if (allPhotos.length > 0 || allDocs.length > 0) {
+        let docContent = '';
+        
+        const getImageSrc = (src) => {
+          if (!src) return '';
+          if (src.startsWith('data:') || src.startsWith('http')) return src;
+          if (src.startsWith('/9j/')) return `data:image/jpeg;base64,${src}`;
+          if (src.startsWith('iVBORw0KGgo')) return `data:image/png;base64,${src}`;
+          return `data:image/jpeg;base64,${src}`;
+        };
+        
+        if (allPhotos.length > 0) {
+          docContent += `<h4 class="text-sm text-muted mb-2" style="text-transform:uppercase;font-weight:600;">${icons.image} Fotos (${allPhotos.length})</h4>`;
+          docContent += '<div class="photo-grid mb-3">';
+          allPhotos.forEach((foto, i) => {
+            docContent += `<img src="${getImageSrc(foto.foto)}" class="photo-large" alt="Foto ${i+1}" onerror="this.style.display='none'">`;
+          });
+          docContent += '</div>';
+        }
+        
+        html += createSectionCard('Fotos e Documentos', 'image', docContent, { count: allPhotos.length + allDocs.length });
+      }
+
+      html += '</div>';
+
+      // Footer
+      html += `
+        <footer class="consultation-footer">
+          <p>Documento gerado automaticamente • Consulta realizada em ${currentDate}</p>
+          <p style="margin-top:4px;">Este documento é confidencial e de uso exclusivo do destinatário.</p>
+        </footer>
+      `;
+
+      return html;
+    }
+
+    // Data loading
+    function getUrlParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    function decodeBase64Data(encoded) {
+      try {
+        const decoded = atob(encoded);
+        return JSON.parse(decoded);
+      } catch (e) {
+        console.error('Error decoding base64 data:', e);
+        return null;
+      }
+    }
+
+    function initConsulta() {
+      const container = document.getElementById('consultation-container');
+      
+      // Try to get data from URL parameter
+      const encodedData = getUrlParam('data');
+      if (encodedData) {
+        const data = decodeBase64Data(encodedData);
+        if (data) {
+          container.innerHTML = renderConsultation(data);
+          if (getUrlParam('autoprint') === 'true') {
+            setTimeout(() => window.print(), 1000);
+          }
+          return;
+        }
+      }
+      
+      // Try to get data from window.consultaData
+      if (window.consultaData) {
+        container.innerHTML = renderConsultation(window.consultaData);
+        return;
+      }
+      
+      // Show message if no data
+      container.innerHTML = `
+        <div class="loading" style="flex-direction:column;gap:16px;">
+          <div>${icons.fileText}</div>
+          <div>Nenhum dado de consulta fornecido</div>
+          <div style="font-size:12px;max-width:600px;text-align:center;">
+            <p><strong>Como usar:</strong></p>
+            <p>1. Via URL: <code>?data=[base64_encoded_json]</code></p>
+            <p>2. Via JavaScript: <code>window.consultaData = { ... }; initConsulta();</code></p>
+            <p>3. Via postMessage: <code>window.postMessage({ type: 'consultaData', data: {...} }, '*');</code></p>
+          </div>
+        </div>
+      `;
+    }
+
+    // Listen for postMessage
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'consultaData') {
+        const container = document.getElementById('consultation-container');
+        container.innerHTML = renderConsultation(event.data.data);
+      }
+    });
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', initConsulta);
+  </script>
+</body>
+</html>
