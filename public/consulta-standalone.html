@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta Cadastral</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --background: hsl(210, 20%, 98%);
+      --foreground: hsl(215, 20%, 15%);
+      --card: hsl(0, 0%, 100%);
+      --card-foreground: hsl(215, 20%, 15%);
+      --primary: hsl(210, 70%, 55%);
+      --primary-foreground: hsl(0, 0%, 100%);
+      --secondary: hsl(210, 20%, 96%);
+      --muted: hsl(210, 15%, 94%);
+      --muted-foreground: hsl(215, 15%, 50%);
+      --success: hsl(142, 71%, 45%);
+      --warning: hsl(38, 92%, 50%);
+      --destructive: hsl(0, 75%, 55%);
+      --info: hsl(199, 85%, 50%);
+      --border: hsl(210, 20%, 90%);
+      --header-gradient-start: hsl(210, 60%, 50%);
+      --header-gradient-end: hsl(210, 65%, 40%);
+      --section-header: hsl(210, 60%, 50%);
+      --data-label: hsl(215, 15%, 50%);
+      --data-value: hsl(215, 20%, 15%);
+      --divider: hsl(210, 20%, 92%);
+      --empty-state: hsl(215, 15%, 60%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--background);
+      color: var(--foreground);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .content {
+      width: 210mm;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--header-gradient-start) 0%, var(--header-gradient-end) 100%);
+      color: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .header-content {
+      padding: 24px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 12px;
+      border: 2px solid rgba(255,255,255,0.3);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      object-fit: cover;
+    }
+
+    .avatar-placeholder {
+      width: 96px;
+      height: 96px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+
+    .header-info h1 {
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+
+    .header-info h2 {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-top: 4px;
+    }
+
+    .header-info .cpf {
+      font-size: 18px;
+      color: rgba(255,255,255,0.8);
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+    }
+
+    .date-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.1);
+      padding: 6px 12px;
+      border-radius: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background: white;
+      color: var(--foreground);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .btn:hover {
+      background: var(--secondary);
+    }
+
+    /* Section Cards */
+    .section-card {
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .section-header {
+      background: var(--section-header);
+      color: white;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-header.danger { background: var(--destructive); }
+    .section-header.warning { background: var(--warning); }
+    .section-header.success { background: var(--success); }
+    .section-header.info { background: var(--info); }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-icon {
+      padding: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      display: flex;
+    }
+
+    .section-title h2 {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .section-count {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .section-body {
+      padding: 20px;
+    }
+
+    /* Data Fields */
+    .data-field {
+      margin-bottom: 8px;
+    }
+
+    .data-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--data-label);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .data-value {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--data-value);
+    }
+
+    .data-value.empty {
+      color: var(--empty-state);
+    }
+
+    .data-value.highlight {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* Grid */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 999px;
+      gap: 4px;
+    }
+
+    .badge-success { background: hsla(142, 71%, 45%, 0.1); color: var(--success); }
+    .badge-warning { background: hsla(38, 92%, 50%, 0.1); color: var(--warning); }
+    .badge-danger { background: hsla(0, 75%, 55%, 0.1); color: var(--destructive); }
+    .badge-info { background: hsla(199, 85%, 50%, 0.1); color: var(--info); }
+    .badge-neutral { background: hsla(215, 15%, 55%, 0.1); color: var(--muted-foreground); }
+
+    /* Status badges inline */
+    .status-active {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: hsla(142, 71%, 45%, 0.1);
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .status-inactive {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--muted);
+      color: var(--muted-foreground);
+      font-weight: 600;
+    }
+
+    /* Dividers */
+    .divider {
+      border-top: 1px solid var(--divider);
+      padding-top: 16px;
+      margin-top: 16px;
+    }
+
+    /* Flex utilities */
+    .flex { display: flex; }
+    .flex-wrap { flex-wrap: wrap; }
+    .items-center { align-items: center; }
+    .items-start { align-items: flex-start; }
+    .justify-between { justify-content: space-between; }
+    .gap-2 { gap: 8px; }
+    .gap-3 { gap: 12px; }
+    .gap-4 { gap: 16px; }
+
+    /* Spacing */
+    .mt-1 { margin-top: 4px; }
+    .mt-2 { margin-top: 8px; }
+    .mt-3 { margin-top: 12px; }
+    .mb-2 { margin-bottom: 8px; }
+    .mb-3 { margin-bottom: 12px; }
+    .pb-3 { padding-bottom: 12px; }
+    .pt-3 { padding-top: 12px; }
+
+    /* Text */
+    .text-xs { font-size: 12px; }
+    .text-sm { font-size: 14px; }
+    .text-base { font-size: 16px; }
+    .text-lg { font-size: 18px; }
+    .text-xl { font-size: 20px; }
+    .font-medium { font-weight: 500; }
+    .font-semibold { font-weight: 600; }
+    .font-bold { font-weight: 700; }
+    .text-muted { color: var(--muted-foreground); }
+    .text-primary { color: var(--primary); }
+    .text-success { color: var(--success); }
+    .text-danger { color: var(--destructive); }
+
+    /* List items */
+    .list-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--divider);
+    }
+
+    .list-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .list-item:first-child {
+      padding-top: 0;
+    }
+
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 24px;
+      color: var(--empty-state);
+      font-size: 14px;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid var(--divider);
+      text-align: center;
+      color: var(--muted-foreground);
+      font-size: 14px;
+    }
+
+    .footer p:last-child {
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    /* Print styles */
+    @media print {
+      @page {
+        size: A4;
+        margin: 8mm;
+      }
+
+      html, body {
+        width: 210mm;
+        background: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        font-size: 11px;
+      }
+
+      .container {
+        padding: 0;
+      }
+
+      .content {
+        width: 100%;
+      }
+
+      .header {
+        box-shadow: none;
+        border-radius: 8px;
+        margin-bottom: 16px;
+      }
+
+      .header-content {
+        padding: 16px;
+      }
+
+      .avatar, .avatar-placeholder {
+        width: 80px;
+        height: 80px;
+      }
+
+      .header-info h2 {
+        font-size: 24px;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .section-card {
+        box-shadow: none;
+        page-break-inside: avoid;
+        margin-bottom: 12px;
+      }
+
+      .section-body {
+        padding: 16px;
+      }
+
+      * {
+        box-shadow: none !important;
+      }
+    }
+
+    /* Icons (SVG inline) */
+    .icon {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .icon-sm {
+      width: 16px;
+      height: 16px;
+    }
+
+    .icon-lg {
+      width: 48px;
+      height: 48px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="content" id="app">
+      <!-- Content will be rendered here by JavaScript -->
+    </div>
+  </div>
+
+  <script>
+    // SVG Icons
+    const icons = {
+      user: `<svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
+      userLg: `<svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
+      fileText: `<svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`,
+      calendar: `<svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`,
+      printer: `<svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>`,
+      mapPin: `<svg class="icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`,
+      phone: `<svg class="icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>`,
+      mail: `<svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>`,
+      briefcase: `<svg class="icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`,
+      building: `<svg class="icon" viewBox="0 0 24 24"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>`,
+      car: `<svg class="icon" viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg>`,
+      shieldAlert: `<svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>`,
+      alertTriangle: `<svg class="icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
+      checkCircle: `<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
+      wallet: `<svg class="icon" viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>`,
+      graduationCap: `<svg class="icon" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>`,
+      heart: `<svg class="icon" viewBox="0 0 24 24"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 7.65l.77.77L12 20.65l7.65-7.65.77-.77a5.4 5.4 0 0 0 0-7.65z"></path></svg>`,
+      wifi: `<svg class="icon" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>`,
+      users: `<svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
+      gift: `<svg class="icon" viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>`,
+      syringe: `<svg class="icon" viewBox="0 0 24 24"><path d="m18 2 4 4"></path><path d="m17 7 3-3"></path><path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.5 0-3.4L15 5"></path><path d="m9 11 4 4"></path><path d="m5 19-3 3"></path><path d="m14 4 6 6"></path></svg>`,
+      shoppingBag: `<svg class="icon" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>`,
+      plane: `<svg class="icon" viewBox="0 0 24 24"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path></svg>`,
+      idCard: `<svg class="icon" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M14 10h4"/><path d="M14 14h2"/><path d="M4 19v-1a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1"/></svg>`,
+      key: `<svg class="icon" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>`,
+      creditCard: `<svg class="icon" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>`,
+      home: `<svg class="icon" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>`,
+      zap: `<svg class="icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`,
+      fileBarChart: `<svg class="icon" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18v-4"></path><path d="M8 18v-2"></path><path d="M16 18v-6"></path></svg>`,
+      scale: `<svg class="icon" viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>`,
+      alertCircle: `<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`,
+      linkedin: `<svg class="icon" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>`,
+      landmark: `<svg class="icon" viewBox="0 0 24 24"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>`,
+    };
+
+    // Format date helper
+    function formatDate(date) {
+      if (!date) return '—';
+      try {
+        if (date.includes('/')) return date;
+        return new Date(date).toLocaleDateString('pt-BR');
+      } catch {
+        return date;
+      }
+    }
+
+    // Format currency helper
+    function formatCurrency(value) {
+      if (!value) return null;
+      const num = parseFloat(value);
+      if (isNaN(num)) return value;
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(num);
+    }
+
+    // Create section card
+    function createSectionCard(title, icon, content, options = {}) {
+      const { count, variant = 'default', isEmpty = false, emptyMessage = 'Nenhum registro encontrado' } = options;
+      const variantClass = variant !== 'default' ? variant : '';
+      
+      return `
+        <div class="section-card">
+          <div class="section-header ${variantClass}">
+            <div class="section-title">
+              <div class="section-icon">${icons[icon] || icons.fileText}</div>
+              <h2>${title}</h2>
+            </div>
+            ${count !== undefined && count > 0 ? `<span class="section-count">${count}</span>` : ''}
+          </div>
+          <div class="section-body">
+            ${isEmpty ? `<div class="empty-state">${icons.alertCircle} <span>${emptyMessage}</span></div>` : content}
+          </div>
+        </div>
+      `;
+    }
+
+    // Create data field
+    function createDataField(label, value, options = {}) {
+      const { highlight = false } = options;
+      const displayValue = value || '—';
+      const valueClass = !value ? 'empty' : (highlight ? 'highlight' : '');
+      
+      return `
+        <div class="data-field">
+          <div class="data-label">${label}</div>
+          <div class="data-value ${valueClass}">${displayValue}</div>
+        </div>
+      `;
+    }
+
+    // Render consultation
+    function renderConsultation(data) {
+      const response = data.SERVICE_RESPONSE;
+      if (!response) return '<p>Dados não disponíveis</p>';
+
+      const cadastral = response.cadastral || {};
+      const currentDate = new Date().toLocaleDateString('pt-BR', {
+        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
+
+      // Get photo
+      const allFotos = [...(response.fotos || []), ...(response.extraFotos || [])];
+      const bestPhoto = allFotos.sort((a, b) => (b.classificacao || 0) - (a.classificacao || 0))[0];
+      const photoUrl = bestPhoto?.foto || null;
+
+      let html = `
+        <!-- Header -->
+        <header class="header">
+          <div class="header-content">
+            <div class="header-left">
+              ${photoUrl 
+                ? `<img src="${photoUrl}" alt="Foto" class="avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="avatar-placeholder" style="display:none">${icons.userLg}</div>`
+                : `<div class="avatar-placeholder">${icons.userLg}</div>`
+              }
+              <div class="header-info">
+                <h1><span style="padding:6px;background:rgba(255,255,255,0.1);border-radius:8px;display:inline-flex">${icons.fileText}</span> Consulta Cadastral</h1>
+                ${cadastral.nome ? `<h2>${cadastral.nome}</h2>` : ''}
+                ${cadastral.cpfMask ? `<p class="cpf">CPF: ${cadastral.cpfMask}</p>` : ''}
+              </div>
+            </div>
+            <div class="header-right no-print">
+              <div class="date-badge">${icons.calendar} ${currentDate}</div>
+              <button class="btn" onclick="window.print()">${icons.printer} Imprimir</button>
+            </div>
+          </div>
+        </header>
+      `;
+
+      // Dados Pessoais
+      if (cadastral && Object.keys(cadastral).length > 0) {
+        const getSexoLabel = (sexo) => sexo === 'M' ? 'Masculino' : sexo === 'F' ? 'Feminino' : sexo;
+        
+        let badges = '<div class="flex flex-wrap gap-2 pb-3" style="border-bottom:1px solid var(--divider);margin-bottom:16px">';
+        if (cadastral.indicativoCriminal !== undefined) {
+          badges += cadastral.indicativoCriminal 
+            ? `<span class="badge badge-danger">${icons.alertTriangle} Indicativo Criminal</span>`
+            : `<span class="badge badge-success">${icons.checkCircle} Sem Indicativo Criminal</span>`;
+        }
+        if (cadastral.flagObito2 !== undefined) {
+          badges += cadastral.flagObito2 
+            ? `<span class="badge badge-danger">Óbito Registrado</span>`
+            : `<span class="badge badge-success">Sem Óbito</span>`;
+        }
+        if (cadastral.classeSocial) {
+          badges += `<span class="badge badge-info">Classe ${cadastral.classeSocial}${cadastral.subClasseSocial ? '/' + cadastral.subClasseSocial : ''}</span>`;
+        }
+        if (cadastral.signo) {
+          badges += `<span class="badge badge-neutral">${cadastral.signo}${cadastral.signoChines ? ' • ' + cadastral.signoChines : ''}</span>`;
+        }
+        badges += '</div>';
+
+        const content = `
+          ${badges}
+          <div class="grid-4">
+            ${createDataField('Data de Nascimento', cadastral.dataNasc)}
+            ${createDataField('Idade', cadastral.idade ? cadastral.idade + ' anos' : null)}
+            ${createDataField('Sexo', getSexoLabel(cadastral.sexo))}
+            ${createDataField('Naturalidade', cadastral.naturalidade !== 'n/a' ? cadastral.naturalidade : null)}
+          </div>
+          <div class="grid-2 divider">
+            <div class="flex gap-3">
+              <span style="color:#ec4899">${icons.heart}</span>
+              ${createDataField('Nome da Mãe', cadastral.mae?.nome)}
+            </div>
+            <div class="flex gap-3">
+              <span style="color:var(--primary)">${icons.user}</span>
+              ${createDataField('Nome do Pai', cadastral.pai?.nome !== 'N/a' ? cadastral.pai?.nome : null)}
+            </div>
+          </div>
+          <div class="grid-4 divider">
+            <div class="flex gap-2">
+              <span style="color:var(--success)">${icons.wallet}</span>
+              ${createDataField('Renda Estimada', cadastral.renda, { highlight: true })}
+            </div>
+            <div class="flex gap-2">
+              <span style="color:var(--primary)">${icons.graduationCap}</span>
+              ${createDataField('Escolaridade', cadastral.escolaridade)}
+            </div>
+            ${createDataField('CNS', cadastral.cns?.toString())}
+            ${createDataField('PIS', cadastral.pis?.toString())}
+          </div>
+        `;
+        html += createSectionCard('Dados Pessoais', 'user', content);
+      }
+
+      // Endereços
+      if (response.enderecos && response.enderecos.length > 0) {
+        const content = response.enderecos.map((end, i) => `
+          <div class="list-item flex items-start gap-3">
+            <span class="badge badge-neutral">${end.classificacao || '—'}</span>
+            <div>
+              <p class="font-medium">${end.endereco || end.logradouro}, ${end.numero}${end.complemento ? ' - ' + end.complemento : ''}</p>
+              <p class="text-sm text-muted">${end.bairro} • ${end.cidade}/${end.uf} • CEP: ${end.cep}</p>
+              ${end.dataInformacao ? `<p class="text-xs text-muted mt-1">Atualizado: ${formatDate(end.dataInformacao)}</p>` : ''}
+            </div>
+          </div>
+        `).join('');
+        html += createSectionCard('Endereços', 'mapPin', content, { count: response.enderecos.length });
+      }
+
+      // Telefones e Emails
+      let contactsHtml = '<div class="grid-2">';
+      if (response.telefones && response.telefones.length > 0) {
+        const telContent = response.telefones.slice(0, 12).map((tel, i) => `
+          <div class="list-item flex justify-between items-center">
+            <div class="flex items-center gap-3">
+              <span class="font-medium">${tel.telefone}</span>
+              ${tel.data && tel.data !== 'Data Inválida' ? `<span class="text-xs text-muted">${tel.data}</span>` : ''}
+            </div>
+            ${tel.classificacao ? `<span class="badge badge-neutral">${tel.classificacao}</span>` : ''}
+          </div>
+        `).join('');
+        contactsHtml += createSectionCard('Telefones', 'phone', telContent, { count: response.telefones.length });
+      }
+      if (response.emails && response.emails.length > 0) {
+        const emailContent = response.emails.map((email, i) => `
+          <div class="list-item">
+            <p class="text-sm font-medium" style="word-break:break-all">${email.email}</p>
+            <span class="text-xs text-muted">${email.avaliacao || ''}</span>
+          </div>
+        `).join('');
+        contactsHtml += createSectionCard('E-mails', 'mail', emailContent, { count: response.emails.length });
+      }
+      contactsHtml += '</div>';
+      if (response.telefones?.length > 0 || response.emails?.length > 0) {
+        html += contactsHtml;
+      }
+
+      // Veículos
+      const veiculos = response.placas || response.veiculos;
+      if (veiculos && veiculos.length > 0) {
+        const content = veiculos.map((v, i) => `
+          <div class="list-item">
+            <div class="flex justify-between items-start">
+              <div>
+                <h4 class="font-semibold">${v.marca} ${v.modelo}</h4>
+                <p class="text-sm text-muted">${v.placa} • ${v.anoModelo || v.ano || ''}</p>
+                ${v.cor ? `<span class="text-xs text-muted">Cor: ${v.cor}</span>` : ''}
+                ${v.renavam ? `<span class="text-xs text-muted ml-2">RENAVAM: ${v.renavam}</span>` : ''}
+              </div>
+              ${v.situacao ? `<span class="${v.situacao.toLowerCase().includes('circulacao') ? 'status-active' : 'status-inactive'}">${v.situacao}</span>` : ''}
+            </div>
+          </div>
+        `).join('');
+        html += createSectionCard('Veículos', 'car', content, { count: veiculos.length });
+      }
+
+      // Empregos
+      if (response.empregos && response.empregos.length > 0) {
+        const content = response.empregos.map((emp, i) => `
+          <div class="list-item">
+            <div class="flex justify-between items-start">
+              <div>
+                <h4 class="font-semibold">${emp.razao_social}</h4>
+                ${emp.nome_fantasia ? `<p class="text-sm text-muted">${emp.nome_fantasia}</p>` : ''}
+                ${emp.descricao_cbo ? `<p class="text-sm text-primary font-medium">${emp.descricao_cbo}</p>` : ''}
+              </div>
+              ${emp.salario && emp.salario !== 'R$ 0,00' ? `<span class="font-bold text-success">${emp.salario}</span>` : ''}
+            </div>
+            <div class="flex gap-4 mt-1 text-sm text-muted">
+              <span>Admissão: ${formatDate(emp.data_admissao) || '—'}</span>
+              <span>Demissão: ${formatDate(emp.data_demissao) || 'Atual'}</span>
+            </div>
+          </div>
+        `).join('');
+        html += createSectionCard('Histórico de Empregos', 'briefcase', content, { count: response.empregos.length });
+      }
+
+      // Sociedades
+      if (response.sociedades && response.sociedades.length > 0) {
+        const content = response.sociedades.map((soc, i) => `
+          <div class="list-item">
+            <div class="flex justify-between items-start gap-2">
+              <div>
+                <h4 class="font-semibold">${soc.razao_social}</h4>
+                <p class="text-sm text-muted">CNPJ: ${soc.cnpj}</p>
+              </div>
+              <span class="${soc.situacao_cadastral === 'ATIVA' ? 'status-active' : 'status-inactive'}">${soc.situacao_cadastral}</span>
+            </div>
+            <div class="flex gap-4 mt-1 text-sm text-muted">
+              <span>${soc.qualificacao_socio_descricao || ''}</span>
+              <span>Entrada: ${soc.dt_entrada || '—'}</span>
+            </div>
+          </div>
+        `).join('');
+        html += createSectionCard('Sociedades', 'building', content, { count: response.sociedades.length });
+      }
+
+      // Dívida Ativa
+      if (response.dividaAtiva && response.dividaAtiva.length > 0) {
+        const content = response.dividaAtiva.map((div, i) => `
+          <div class="list-item">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-semibold">${div.receita_principal}</p>
+                <p class="text-sm text-muted">${div.situacao_inscricao || ''}</p>
+                <p class="text-xs text-muted mt-1">
+                  Inscrição: ${formatDate(div.data_inscricao)} • ${div.indicador_ajuizado === 'NAO' ? 'Não Ajuizado' : 'Ajuizado'}
+                </p>
+              </div>
+              <span class="text-xl font-bold text-danger">${formatCurrency(div.valor_consolidado) || ''}</span>
+            </div>
+          </div>
+        `).join('');
+        html += createSectionCard('Dívida Ativa', 'alertTriangle', content, { count: response.dividaAtiva.length, variant: 'danger' });
+      }
+
+      // Credenciais Vazadas
+      if (response.credenciaisVazadas && response.credenciaisVazadas.length > 0) {
+        const totalLeaks = response.credenciaisVazadas.reduce((acc, c) => acc + (c.resultados?.length || 0), 0);
+        const content = response.credenciaisVazadas.map(cred => `
+          <div class="mb-3">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="badge badge-danger">${cred.tipo}</span>
+              <span class="text-sm text-muted" style="font-family:monospace">${cred.valor}</span>
+            </div>
+            ${cred.resultados?.map(r => `
+              <div style="background:hsla(0,75%,55%,0.05);border:1px solid hsla(0,75%,55%,0.2);border-radius:8px;padding:12px;margin-bottom:8px">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-medium text-danger">${r.host}</span>
+                  <span class="text-xs text-muted">${r.file_date || ''}</span>
+                </div>
+                <div class="grid-2" style="gap:12px">
+                  <div>
+                    <span class="text-xs text-muted">LOGIN</span>
+                    <p class="text-xs" style="font-family:monospace;background:var(--muted);padding:2px 6px;border-radius:4px;display:inline-block">${r.login}</p>
+                  </div>
+                  <div>
+                    <span class="text-xs text-muted">SENHA</span>
+                    <p class="text-xs font-medium" style="font-family:monospace;background:var(--muted);padding:2px 6px;border-radius:4px;display:inline-block">${r.password}</p>
+                  </div>
+                </div>
+              </div>
+            `).join('') || ''}
+          </div>
+        `).join('');
+        html += createSectionCard('Credenciais Vazadas', 'shieldAlert', content, { count: totalLeaks, variant: 'danger' });
+      }
+
+      // Planos e Serviços
+      if (response.planos && response.planos.length > 0) {
+        const content = response.planos.map((plano, i) => `
+          <div class="list-item">
+            <div class="flex justify-between items-start">
+              <div>
+                <h4 class="font-semibold text-sm">${plano.empresa}</h4>
+                <p class="text-xs text-muted">${plano.plano || ''}</p>
+                ${plano.endereco ? `<p class="text-xs text-muted mt-1">${plano.endereco}, ${plano.numero} - ${plano.cidade}/${plano.uf}</p>` : ''}
+              </div>
+              <div style="text-align:right">
+                <span class="${plano.statusProduto === 'Ativo' ? 'status-active' : 'status-inactive'}">${plano.statusProduto}</span>
+                ${plano.dataProduto ? `<p class="text-xs text-muted mt-1">${plano.dataProduto}</p>` : ''}
+              </div>
+            </div>
+          </div>
+        `).join('');
+        html += createSectionCard('Planos e Serviços', 'wifi', content, { count: response.planos.length });
+      }
+
+      // Viagens
+      if (response.viagens && response.viagens.length > 0) {
+        const content = response.viagens.map((v, i) => `
+          <div class="list-item">
+            <div class="flex justify-between items-start">
+              <div>
+                <h4 class="font-semibold text-sm">${v.paisDestino || v.destino}</h4>
+                <p class="text-xs text-muted">${v.motivo || ''}</p>
+              </div>
+              <div style="text-align:right">
+                <p class="text-xs text-muted">${formatDate(v.dataPartida) || formatDate(v.data)}</p>
+                ${v.dataRetorno ? `<p class="text-xs text-muted">Retorno: ${formatDate(v.dataRetorno)}</p>` : ''}
+              </div>
+            </div>
+          </div>
+        `).join('');
+        html += createSectionCard('Histórico de Viagens', 'plane', content, { count: response.viagens.length });
+      }
+
+      // Chaves PIX
+      if (response.chavesPix && response.chavesPix.length > 0) {
+        const content = response.chavesPix.map((pix, i) => `
+          <div class="list-item">
+            <div class="flex justify-between items-center">
+              <div class="flex items-center gap-3">
+                <span class="badge badge-info">${pix.tipo}</span>
+                <span class="font-medium text-sm" style="font-family:monospace">${pix.chave}</span>
+              </div>
+              ${pix.banco ? `<span class="text-xs text-muted">${pix.banco}</span>` : ''}
+            </div>
+          </div>
+        `).join('');
+        html += createSectionCard('Chaves PIX', 'key', content, { count: response.chavesPix.length });
+      }
+
+      // Contas Bancárias
+      if (response.contasBancos && response.contasBancos.length > 0) {
+        const content = response.contasBancos.map((conta, i) => `
+          <div class="list-item">
+            <h4 class="font-semibold text-sm">${conta.banco}</h4>
+            <p class="text-xs text-muted">Ag: ${conta.agencia} • Conta: ${conta.conta}${conta.tipoConta ? ' • ' + conta.tipoConta : ''}</p>
+          </div>
+        `).join('');
+        html += createSectionCard('Contas Bancárias', 'landmark', content, { count: response.contasBancos.length });
+      }
+
+      // Footer
+      html += `
+        <footer class="footer">
+          <p>Documento gerado automaticamente • Informações confidenciais</p>
+          ${data.DATE ? `<p>Data da consulta: ${formatDate(data.DATE)} • Serviço: ${data.SERVICE || ''}</p>` : ''}
+        </footer>
+      `;
+
+      return html;
+    }
+
+    // Sample data - Replace this with your actual data
+    const sampleData = {
+      DATE: new Date().toISOString(),
+      SERVICE: "CONSULTA_COMPLETA",
+      SERVICE_RESPONSE: {
+        cadastral: {
+          nome: "EXEMPLO DE NOME COMPLETO",
+          cpf: "12345678900",
+          cpfMask: "123.456.789-00",
+          dataNasc: "01/01/1990",
+          idade: 35,
+          sexo: "M",
+          naturalidade: "São Paulo/SP",
+          renda: "R$ 5.000,00",
+          escolaridade: "Superior Completo",
+          classeSocial: "B",
+          signo: "Capricórnio",
+          mae: { nome: "NOME DA MÃE EXEMPLO" },
+          pai: { nome: "NOME DO PAI EXEMPLO" },
+          indicativoCriminal: false,
+          flagObito2: false
+        },
+        enderecos: [
+          {
+            classificacao: "RESIDENCIAL",
+            endereco: "Rua Exemplo",
+            numero: "123",
+            complemento: "Apto 45",
+            bairro: "Centro",
+            cidade: "São Paulo",
+            uf: "SP",
+            cep: "01234-567"
+          }
+        ],
+        telefones: [
+          { telefone: "(11) 99999-8888", classificacao: "MÓVEL", data: "2024" }
+        ],
+        emails: [
+          { email: "exemplo@email.com", avaliacao: "VÁLIDO" }
+        ]
+      }
+    };
+
+    // Initialize - Replace sampleData with your actual API response
+    document.getElementById('app').innerHTML = renderConsultation(sampleData);
+  </script>
+</body>
+</html>
