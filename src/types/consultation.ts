@@ -528,6 +528,83 @@ export interface DocBase64 {
   dataEmissao?: string;
 }
 
+// LinkedIn
+export interface LinkedIn {
+  nome?: string;
+  url?: string;
+  cargo?: string;
+  empresa?: string;
+  localizacao?: string;
+  conexoes?: number;
+  resumo?: string;
+}
+
+// Universitário
+export interface Universitario {
+  instituicao?: string;
+  curso?: string;
+  situacao?: string;
+  anoInicio?: string;
+  anoConclusao?: string;
+  modalidade?: string;
+  campus?: string;
+}
+
+// SISU
+export interface SISU {
+  edicao?: string;
+  instituicao?: string;
+  curso?: string;
+  modalidade?: string;
+  notaCorte?: number;
+  classificacao?: number;
+  situacao?: string;
+}
+
+// ProUni
+export interface ProUni {
+  edicao?: string;
+  instituicao?: string;
+  curso?: string;
+  tipoBolsa?: string;
+  situacao?: string;
+  mensalidade?: string;
+}
+
+// IRPF
+export interface IRPF {
+  anoExercicio?: number;
+  anoCalendario?: number;
+  situacao?: string;
+  tipoDeclaracao?: string;
+  dataEnvio?: string;
+  rendaTributavel?: string;
+  impostoDevido?: string;
+  restituicao?: string;
+}
+
+// PPE - Pessoa Politicamente Exposta
+export interface PPE {
+  cargo?: string;
+  orgao?: string;
+  dataInicio?: string;
+  dataFim?: string;
+  nivel?: string;
+  situacao?: string;
+}
+
+// Empréstimo
+export interface Emprestimo {
+  instituicao?: string;
+  tipo?: string;
+  valor?: string;
+  parcelas?: number;
+  valorParcela?: string;
+  dataContratacao?: string;
+  situacao?: string;
+  taxaJuros?: string;
+}
+
 export interface ServiceResponse {
   cadastral?: Cadastral;
   credenciaisVazadas?: CredencialVazada[];
@@ -563,23 +640,23 @@ export interface ServiceResponse {
   cnh?: CNH;
   // Outros dados
   assinaturas?: any[];
-  ppe?: any[];
+  ppe?: PPE[];
   outrosNomes?: any[];
   chavesPix?: ChavePix[];
   contasBancos?: ContaBanco[];
-  universitarios?: any[];
-  emprestimos?: any[];
+  universitarios?: Universitario[];
+  emprestimos?: Emprestimo[];
   beneficios?: any[];
   dadosConselho?: any[];
   imoveisSp?: any[];
   pagamentosAuxilioEmergencial?: any[];
   certidaoObito?: any;
-  irpf?: any[];
+  irpf?: IRPF[];
   estrangeiro?: any;
-  sisu?: any[];
-  prouni?: any[];
+  sisu?: SISU[];
+  prouni?: ProUni[];
   inssSiape?: any[];
-  linkedin?: any[];
+  linkedin?: LinkedIn[];
   drones?: Drone[];
   ccf?: any[];
   viagens?: Viagem[];

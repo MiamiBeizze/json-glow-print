@@ -25,6 +25,8 @@ import { DocumentsGallerySection } from "./DocumentsGallerySection";
 import { ProcessesSection } from "./ProcessesSection";
 import { CNHSection } from "./CNHSection";
 import { AircraftSection } from "./AircraftSection";
+import { EducationLinkedInSection } from "./EducationLinkedInSection";
+import { FinancialDataSection } from "./FinancialDataSection";
 import { ConsultaAPIResponse } from "@/types/consultation";
 
 interface ConsultationViewProps {
@@ -345,6 +347,21 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
               </SectionCard>
             )}
           </div>
+
+          {/* Educação e LinkedIn */}
+          <EducationLinkedInSection 
+            linkedin={response.linkedin}
+            universitarios={response.universitarios}
+            sisu={response.sisu}
+            prouni={response.prouni}
+          />
+
+          {/* Dados Financeiros (IRPF, PPE, Empréstimos) */}
+          <FinancialDataSection 
+            irpf={response.irpf}
+            ppe={response.ppe}
+            emprestimos={response.emprestimos}
+          />
 
           {/* Chaves PIX */}
           <PixKeysSection chavesPix={response.chavesPix} />
