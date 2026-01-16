@@ -875,50 +875,256 @@
       return html;
     }
 
-    // Sample data - Replace this with your actual data
+    // Sample data - Replace this with your actual data from API
     const sampleData = {
       DATE: new Date().toISOString(),
       SERVICE: "CONSULTA_COMPLETA",
       SERVICE_RESPONSE: {
         cadastral: {
-          nome: "EXEMPLO DE NOME COMPLETO",
+          nome: "MARIA SILVA SANTOS",
           cpf: "12345678900",
           cpfMask: "123.456.789-00",
-          dataNasc: "01/01/1990",
-          idade: 35,
-          sexo: "M",
-          naturalidade: "São Paulo/SP",
-          renda: "R$ 5.000,00",
+          dataNasc: "15/03/1985",
+          idade: 39,
+          sexo: "F",
+          naturalidade: "Rio de Janeiro/RJ",
+          renda: "R$ 8.500,00",
           escolaridade: "Superior Completo",
           classeSocial: "B",
-          signo: "Capricórnio",
-          mae: { nome: "NOME DA MÃE EXEMPLO" },
-          pai: { nome: "NOME DO PAI EXEMPLO" },
+          subClasseSocial: "1",
+          signo: "Peixes",
+          signoChines: "Boi",
+          cns: "123456789012345",
+          pis: "12345678901",
+          mae: { nome: "ANA MARIA SILVA" },
+          pai: { nome: "JOSE CARLOS SANTOS" },
           indicativoCriminal: false,
           flagObito2: false
         },
         enderecos: [
           {
             classificacao: "RESIDENCIAL",
-            endereco: "Rua Exemplo",
-            numero: "123",
-            complemento: "Apto 45",
-            bairro: "Centro",
+            endereco: "Rua das Flores",
+            numero: "456",
+            complemento: "Apto 1201",
+            bairro: "Jardim Paulista",
             cidade: "São Paulo",
             uf: "SP",
-            cep: "01234-567"
+            cep: "01410-001",
+            dataInformacao: "2024-06-15"
+          },
+          {
+            classificacao: "COMERCIAL",
+            endereco: "Av. Paulista",
+            numero: "1000",
+            complemento: "Sala 502",
+            bairro: "Bela Vista",
+            cidade: "São Paulo",
+            uf: "SP",
+            cep: "01310-100",
+            dataInformacao: "2023-01-20"
           }
         ],
         telefones: [
-          { telefone: "(11) 99999-8888", classificacao: "MÓVEL", data: "2024" }
+          { telefone: "(11) 99999-8888", classificacao: "MÓVEL", data: "2024" },
+          { telefone: "(11) 98888-7777", classificacao: "MÓVEL", data: "2023" },
+          { telefone: "(11) 3333-4444", classificacao: "FIXO", data: "2022" }
         ],
         emails: [
-          { email: "exemplo@email.com", avaliacao: "VÁLIDO" }
+          { email: "maria.silva@gmail.com", avaliacao: "VÁLIDO" },
+          { email: "maria.santos@empresa.com.br", avaliacao: "VÁLIDO" }
+        ],
+        placas: [
+          {
+            placa: "ABC1D23",
+            marca: "TOYOTA",
+            modelo: "COROLLA XEI 2.0",
+            anoModelo: "2022/2023",
+            cor: "PRATA",
+            renavam: "12345678901",
+            combustivel: "FLEX",
+            situacao: "REGULAR"
+          },
+          {
+            placa: "XYZ9E87",
+            marca: "HONDA",
+            modelo: "CIVIC EXL",
+            anoModelo: "2020/2021",
+            cor: "PRETO",
+            renavam: "98765432109",
+            combustivel: "FLEX",
+            situacao: "REGULAR"
+          }
+        ],
+        empregos: [
+          {
+            empresa: "TECH SOLUTIONS LTDA",
+            cnpj: "12.345.678/0001-90",
+            cargo: "GERENTE DE PROJETOS",
+            dataAdmissao: "2020-03-01",
+            dataDemissao: null,
+            salario: "R$ 12.000,00",
+            situacao: "ATIVO"
+          },
+          {
+            empresa: "INOVAÇÃO DIGITAL S.A.",
+            cnpj: "98.765.432/0001-10",
+            cargo: "ANALISTA SENIOR",
+            dataAdmissao: "2015-06-15",
+            dataDemissao: "2020-02-28",
+            salario: "R$ 8.500,00",
+            situacao: "INATIVO"
+          }
+        ],
+        sociedades: [
+          {
+            razaoSocial: "SILVA CONSULTORIA EMPRESARIAL LTDA",
+            cnpj: "11.222.333/0001-44",
+            situacaoCadastral: "ATIVA",
+            dataEntrada: "2018-01-15",
+            dataSaida: null,
+            participacao: "50%",
+            cargo: "SÓCIA ADMINISTRADORA"
+          },
+          {
+            razaoSocial: "INVESTIMENTOS SANTOS EIRELI",
+            cnpj: "55.666.777/0001-88",
+            situacaoCadastral: "ATIVA",
+            dataEntrada: "2021-06-01",
+            dataSaida: null,
+            participacao: "100%",
+            cargo: "TITULAR"
+          }
+        ],
+        dividaAtiva: [
+          {
+            origem: "FEDERAL",
+            inscricao: "123456789",
+            valor: "R$ 15.230,45",
+            dataInscricao: "2022-08-10",
+            situacao: "EM COBRANÇA",
+            natureza: "TRIBUTÁRIA"
+          }
+        ],
+        credenciaisVazadas: [
+          {
+            email: "maria.silva@gmail.com",
+            fonte: "LinkedIn Breach 2021",
+            dataVazamento: "2021-06-22",
+            senhaVazada: true,
+            tiposDadosVazados: ["email", "senha", "nome"]
+          },
+          {
+            email: "maria.santos@empresa.com.br",
+            fonte: "Collection #1",
+            dataVazamento: "2019-01-17",
+            senhaVazada: true,
+            tiposDadosVazados: ["email", "senha"]
+          }
+        ],
+        planosServicos: [
+          {
+            tipo: "TELEFONIA",
+            operadora: "VIVO",
+            plano: "PÓS-PAGO PREMIUM",
+            valor: "R$ 199,90",
+            status: "ATIVO"
+          },
+          {
+            tipo: "STREAMING",
+            operadora: "NETFLIX",
+            plano: "PREMIUM 4K",
+            valor: "R$ 55,90",
+            status: "ATIVO"
+          },
+          {
+            tipo: "INTERNET",
+            operadora: "NET/CLARO",
+            plano: "FIBRA 500MB",
+            valor: "R$ 149,90",
+            status: "ATIVO"
+          }
+        ],
+        historicoViagens: [
+          {
+            destino: "MIAMI - EUA",
+            dataIda: "2024-01-15",
+            dataVolta: "2024-01-25",
+            companhia: "LATAM",
+            tipo: "INTERNACIONAL"
+          },
+          {
+            destino: "PORTO SEGURO - BA",
+            dataIda: "2023-07-10",
+            dataVolta: "2023-07-17",
+            companhia: "GOL",
+            tipo: "NACIONAL"
+          },
+          {
+            destino: "PARIS - FRANÇA",
+            dataIda: "2023-03-01",
+            dataVolta: "2023-03-15",
+            companhia: "AIR FRANCE",
+            tipo: "INTERNACIONAL"
+          }
+        ],
+        chavesPix: [
+          {
+            chave: "maria.silva@gmail.com",
+            tipo: "EMAIL",
+            banco: "NUBANK",
+            dataCriacao: "2021-03-15"
+          },
+          {
+            chave: "123.456.789-00",
+            tipo: "CPF",
+            banco: "ITAÚ",
+            dataCriacao: "2020-11-20"
+          },
+          {
+            chave: "(11) 99999-8888",
+            tipo: "TELEFONE",
+            banco: "BRADESCO",
+            dataCriacao: "2022-01-05"
+          }
+        ],
+        contasBancos: [
+          {
+            banco: "NUBANK",
+            codigoBanco: "260",
+            agencia: "0001",
+            conta: "1234567-8",
+            tipoConta: "CORRENTE",
+            status: "ATIVA",
+            dataAbertura: "2019-05-10"
+          },
+          {
+            banco: "ITAÚ UNIBANCO",
+            codigoBanco: "341",
+            agencia: "1234",
+            conta: "98765-4",
+            tipoConta: "CORRENTE",
+            status: "ATIVA",
+            dataAbertura: "2015-02-20"
+          },
+          {
+            banco: "BRADESCO",
+            codigoBanco: "237",
+            agencia: "5678",
+            conta: "11223-3",
+            tipoConta: "POUPANÇA",
+            status: "ATIVA",
+            dataAbertura: "2018-08-15"
+          }
+        ],
+        fotos: [
+          { foto: null, classificacao: 1 }
         ]
       }
     };
 
     // Initialize - Replace sampleData with your actual API response
+    // Example: document.getElementById('app').innerHTML = renderConsultation(apiResponse);
     document.getElementById('app').innerHTML = renderConsultation(sampleData);
   </script>
 </body>
