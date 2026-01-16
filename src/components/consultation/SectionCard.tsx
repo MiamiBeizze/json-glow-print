@@ -35,9 +35,9 @@ export const SectionCard = ({
       <div className={`${variantStyles[variant]} text-primary-foreground px-4 py-3 flex items-center justify-between`}>
         <div className="flex items-center gap-3">
           <div className="p-1.5 bg-white/10 rounded-lg">
-            <Icon className="w-4 h-4" />
+            <Icon className="w-5 h-5" />
           </div>
-          <h2 className="font-semibold text-sm tracking-wide">{title}</h2>
+          <h2 className="font-semibold text-base tracking-wide">{title}</h2>
         </div>
         {count !== undefined && count > 0 && (
           <span className="bg-white/20 text-white text-xs font-bold px-2.5 py-1 rounded-full">
@@ -45,7 +45,7 @@ export const SectionCard = ({
           </span>
         )}
       </div>
-      <div className="p-4 print:p-3">
+      <div className="p-5 print:p-4">
         {isEmpty ? (
           <div className="flex items-center justify-center gap-2 py-6 text-empty-state">
             <AlertCircle className="w-5 h-5" />

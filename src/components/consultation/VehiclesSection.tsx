@@ -19,22 +19,22 @@ export const VehiclesSection = ({ placas }: VehiclesSectionProps) => {
       emptyMessage="Nenhum veículo encontrado"
     >
       {placas && (
-        <div className="space-y-4">
+        <div className="space-y-5">
           {placas.map((veiculo, index) => (
             <div
               key={index}
-              className={`${index > 0 ? "pt-4 border-t border-divider" : ""}`}
+              className={`${index > 0 ? "pt-5 border-t border-divider" : ""}`}
             >
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-5">
                 {/* Fotos do veículo */}
                 {veiculo.fotosCarro && veiculo.fotosCarro.length > 0 && (
-                  <div className="flex-shrink-0 flex gap-1">
-                    {veiculo.fotosCarro.slice(0, 2).map((foto, fotoIndex) => (
+                  <div className="flex-shrink-0 flex gap-2">
+                    {veiculo.fotosCarro.slice(0, 3).map((foto, fotoIndex) => (
                       <img
                         key={fotoIndex}
                         src={foto}
                         alt={`Foto ${fotoIndex + 1} do veículo ${veiculo.placa}`}
-                        className="w-20 h-14 object-cover rounded border border-border"
+                        className="w-24 h-18 object-cover rounded-lg border border-border shadow-sm print:w-20 print:h-14"
                         onError={(e) => {
                           (e.target as HTMLImageElement).style.display = 'none';
                         }}
@@ -44,13 +44,13 @@ export const VehiclesSection = ({ placas }: VehiclesSectionProps) => {
                 )}
                 
                 <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-3">
                     <div>
-                      <span className="font-semibold text-foreground">
+                      <span className="font-bold text-lg text-foreground print:text-base">
                         {veiculo.modelo}
                       </span>
                       {veiculo.placa && (
-                        <span className="ml-2 text-xs font-mono bg-muted px-2 py-0.5 rounded">
+                        <span className="ml-3 text-sm font-mono bg-muted px-2.5 py-1 rounded font-semibold">
                           {veiculo.placa}
                         </span>
                       )}

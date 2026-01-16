@@ -25,15 +25,15 @@ export const PersonalDataSection = ({ data }: PersonalDataSectionProps) => {
       emptyMessage="Dados pessoais não disponíveis"
     >
       {data && (
-        <div className="space-y-4">
+        <div className="space-y-5">
           {/* Status badges */}
-          <div className="flex flex-wrap gap-2 pb-3 border-b border-divider">
+          <div className="flex flex-wrap gap-2 pb-4 border-b border-divider">
             {data.indicativoCriminal !== undefined && (
               <Badge variant={data.indicativoCriminal ? "danger" : "success"}>
                 {data.indicativoCriminal ? (
-                  <><AlertTriangle className="w-3 h-3 mr-1" /> Indicativo Criminal</>
+                  <><AlertTriangle className="w-3.5 h-3.5 mr-1" /> Indicativo Criminal</>
                 ) : (
-                  <><CheckCircle className="w-3 h-3 mr-1" /> Sem Indicativo Criminal</>
+                  <><CheckCircle className="w-3.5 h-3.5 mr-1" /> Sem Indicativo Criminal</>
                 )}
               </Badge>
             )}
@@ -63,53 +63,50 @@ export const PersonalDataSection = ({ data }: PersonalDataSectionProps) => {
           </DataGrid>
 
           {/* Parents */}
-          <div className="grid grid-cols-2 gap-4 pt-3 border-t border-divider">
+          <div className="grid grid-cols-2 gap-6 pt-4 border-t border-divider">
             <div className="flex items-start gap-3">
-              <Heart className="w-4 h-4 text-pink-500 mt-0.5" />
-              <DataField label="Nome da Mãe" value={data.mae?.nome} size="sm" />
+              <Heart className="w-5 h-5 text-pink-500 mt-0.5" />
+              <DataField label="Nome da Mãe" value={data.mae?.nome} />
             </div>
             <div className="flex items-start gap-3">
-              <User className="w-4 h-4 text-blue-500 mt-0.5" />
-              <DataField label="Nome do Pai" value={data.pai?.nome !== 'N/a' ? data.pai?.nome : undefined} size="sm" />
+              <User className="w-5 h-5 text-blue-500 mt-0.5" />
+              <DataField label="Nome do Pai" value={data.pai?.nome !== 'N/a' ? data.pai?.nome : undefined} />
             </div>
           </div>
 
           {/* Socioeconomic */}
-          <div className="grid grid-cols-4 gap-4 pt-3 border-t border-divider">
+          <div className="grid grid-cols-4 gap-6 pt-4 border-t border-divider">
             <div className="flex items-start gap-2">
-              <Wallet className="w-4 h-4 text-green-500 mt-0.5" />
-              <DataField label="Renda Estimada" value={data.renda} highlight size="sm" />
+              <Wallet className="w-5 h-5 text-green-500 mt-0.5" />
+              <DataField label="Renda Estimada" value={data.renda} highlight />
             </div>
             <div className="flex items-start gap-2">
-              <GraduationCap className="w-4 h-4 text-blue-500 mt-0.5" />
-              <DataField label="Escolaridade" value={data.escolaridade} size="sm" />
+              <GraduationCap className="w-5 h-5 text-blue-500 mt-0.5" />
+              <DataField label="Escolaridade" value={data.escolaridade} />
             </div>
-            <DataField label="CNS" value={data.cns?.toString()} size="sm" />
-            <DataField label="PIS" value={data.pis?.toString()} size="sm" />
+            <DataField label="CNS" value={data.cns?.toString()} />
+            <DataField label="PIS" value={data.pis?.toString()} />
           </div>
 
           {/* Documents */}
           {(data.rg?.numero !== 'n/a' || data.ctps?.numero || data.tituloEleitor?.numero) && (
-            <div className="grid grid-cols-3 gap-4 pt-3 border-t border-divider">
+            <div className="grid grid-cols-3 gap-6 pt-4 border-t border-divider">
               {data.rg?.numero !== 'n/a' && (
                 <DataField 
                   label="RG" 
                   value={`${data.rg?.numero || ''} ${data.rg?.orgao !== 'n/a' ? `(${data.rg?.orgao}${data.rg?.uf ? `/${data.rg.uf}` : ''})` : ''}`} 
-                  size="sm" 
                 />
               )}
               {data.ctps?.numero && (
                 <DataField 
                   label="CTPS" 
                   value={`${data.ctps.numero} / Série ${data.ctps.serie}`} 
-                  size="sm" 
                 />
               )}
               {data.tituloEleitor?.numero && (
                 <DataField 
                   label="Título de Eleitor" 
                   value={`${data.tituloEleitor.numero} - Zona ${data.tituloEleitor.zona} / Seção ${data.tituloEleitor.secao}`} 
-                  size="sm" 
                 />
               )}
             </div>
