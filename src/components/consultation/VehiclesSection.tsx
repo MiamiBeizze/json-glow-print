@@ -3,22 +3,13 @@ import { SectionCard } from "./SectionCard";
 import { DataField } from "./DataField";
 import { DataGrid } from "./DataGrid";
 import { Veiculo } from "@/types/consultation";
-import { Badge } from "@/components/ui/badge";
 
 interface VehiclesSectionProps {
-  veiculos?: Veiculo[];
+  placas?: Veiculo[];
 }
 
-export const VehiclesSection = ({ veiculos }: VehiclesSectionProps) => {
-  const isEmpty = !veiculos || veiculos.length === 0;
-
-  const getSituacaoVariant = (situacao?: string) => {
-    if (!situacao) return "secondary";
-    const lower = situacao.toLowerCase();
-    if (lower.includes("regular") || lower.includes("ativo")) return "default";
-    if (lower.includes("baixado") || lower.includes("inativo")) return "destructive";
-    return "secondary";
-  };
+export const VehiclesSection = ({ placas }: VehiclesSectionProps) => {
+  const isEmpty = !placas || placas.length === 0;
 
   return (
     <SectionCard
@@ -27,37 +18,55 @@ export const VehiclesSection = ({ veiculos }: VehiclesSectionProps) => {
       isEmpty={isEmpty}
       emptyMessage="Nenhum veículo encontrado"
     >
-      {veiculos && (
+      {placas && (
         <div className="space-y-4">
-          {veiculos.map((veiculo, index) => (
+          {placas.map((veiculo, index) => (
             <div
               key={index}
               className={`${index > 0 ? "pt-4 border-t border-divider" : ""}`}
             >
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <span className="font-semibold text-foreground">
-                    {veiculo.marca} {veiculo.modelo}
-                  </span>
-                  {veiculo.placa && (
-                    <span className="ml-2 text-sm font-mono bg-muted px-2 py-0.5 rounded">
-                      {veiculo.placa}
-                    </span>
-                  )}
-                </div>
-                {veiculo.situacao && (
-                  <Badge variant={getSituacaoVariant(veiculo.situacao)}>
-                    {veiculo.situacao}
-                  </Badge>
+              <div className="flex items-start gap-4">
+                {/* Fotos do veículo */}
+                {veiculo.fotosCarro && veiculo.fotosCarro.length > 0 && (
+                  <div className="flex-shrink-0 flex gap-1">
+                    {veiculo.fotosCarro.slice(0, 2).map((foto, fotoIndex) => (
+                      <img
+                        key={fotoIndex}
+                        src={foto}
+                        alt={`Foto ${fotoIndex + 1} do veículo ${veiculo.placa}`}
+                        className="w-20 h-14 object-cover rounded border border-border"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    ))}
+                  </div>
                 )}
+                
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <span className="font-semibold text-foreground">
+                        {veiculo.modelo}
+                      </span>
+                      {veiculo.placa && (
+                        <span className="ml-2 text-xs font-mono bg-muted px-2 py-0.5 rounded">
+                          {veiculo.placa}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <DataGrid columns={4}>
+                    <DataField label="Renavam" value={veiculo.renavam?.toString()} />
+                    <DataField label="Chassi" value={veiculo.chassi} />
+                    <DataField 
+                      label="Ano Fab./Mod." 
+                      value={veiculo.anoFab && veiculo.anoModelo ? `${veiculo.anoFab}/${veiculo.anoModelo}` : undefined} 
+                    />
+                    <DataField label="Combustível" value={veiculo.combustivel} />
+                  </DataGrid>
+                </div>
               </div>
-              <DataGrid columns={4}>
-                <DataField label="Renavam" value={veiculo.renavam} />
-                <DataField label="Chassi" value={veiculo.chassi} />
-                <DataField label="Ano Fab./Mod." value={veiculo.anoFabricacao && veiculo.anoModelo ? `${veiculo.anoFabricacao}/${veiculo.anoModelo}` : undefined} />
-                <DataField label="Cor" value={veiculo.cor} />
-                <DataField label="Combustível" value={veiculo.combustivel} />
-              </DataGrid>
             </div>
           ))}
         </div>
