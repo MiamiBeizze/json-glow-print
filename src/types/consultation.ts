@@ -458,6 +458,47 @@ export interface DadosPessoais {
   digitoVerificador?: string;
 }
 
+// Chaves PIX
+export interface ChavePix {
+  tipo?: string;
+  chave?: string;
+  banco?: string;
+  dataCriacao?: string;
+  status?: string;
+}
+
+// Contas Bancárias
+export interface ContaBanco {
+  banco?: string;
+  codigoBanco?: string;
+  agencia?: string;
+  conta?: string;
+  tipoConta?: string;
+  status?: string;
+  dataAbertura?: string;
+}
+
+// Viagens
+export interface Viagem {
+  destino?: string;
+  origem?: string;
+  dataIda?: string;
+  dataVolta?: string;
+  companhia?: string;
+  tipoViagem?: string;
+  localizador?: string;
+  status?: string;
+}
+
+// Documentos Base64
+export interface DocBase64 {
+  tipo?: string;
+  descricao?: string;
+  base64?: string;
+  url?: string;
+  dataEmissao?: string;
+}
+
 export interface ServiceResponse {
   cadastral?: Cadastral;
   credenciaisVazadas?: CredencialVazada[];
@@ -465,7 +506,6 @@ export interface ServiceResponse {
   genitores?: Genitor[];
   fotos?: Foto[];
   extraFotos?: Foto[];
-  docsBase64?: any[];
   enderecos?: Endereco[];
   telefones?: Telefone[];
   emails?: Email[];
@@ -496,8 +536,8 @@ export interface ServiceResponse {
   assinaturas?: any[];
   ppe?: any[];
   outrosNomes?: any[];
-  chavesPix?: any[];
-  contasBancos?: any[];
+  chavesPix?: ChavePix[];
+  contasBancos?: ContaBanco[];
   universitarios?: any[];
   emprestimos?: any[];
   beneficios?: any[];
@@ -513,7 +553,8 @@ export interface ServiceResponse {
   linkedin?: any[];
   drones?: any[];
   ccf?: any[];
-  viagens?: any[];
+  viagens?: Viagem[];
+  docsBase64?: DocBase64[];
   // Legacy/Other
   contatos?: Contato[];
   vazamentos?: Vazamento[];
