@@ -11,9 +11,9 @@ export const DataField = ({ label, value, className = "", highlight = false, siz
   const isEmpty = !value;
 
   const sizeStyles = {
-    sm: { label: "text-[10px]", value: "text-xs" },
-    md: { label: "text-xs", value: "text-sm" },
-    lg: { label: "text-xs", value: "text-base" },
+    sm: { label: "text-xs", value: "text-sm" },
+    md: { label: "text-xs", value: "text-base" },
+    lg: { label: "text-sm", value: "text-lg" },
   };
 
   return (

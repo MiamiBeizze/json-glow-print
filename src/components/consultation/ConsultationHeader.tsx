@@ -32,20 +32,20 @@ export const ConsultationHeader = ({ title, subtitle, cadastral, fotos }: Consul
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-5">
             {/* Photo or Avatar */}
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               {photoUrl ? (
                 <img 
                   src={photoUrl} 
                   alt="Foto do consultado"
-                  className="w-20 h-20 rounded-xl object-cover border-2 border-white/30 shadow-lg"
+                  className="w-24 h-24 rounded-xl object-cover border-2 border-white/30 shadow-lg print:w-20 print:h-20"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                     e.currentTarget.nextElementSibling?.classList.remove('hidden');
                   }}
                 />
               ) : null}
-              <div className={`w-20 h-20 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border-2 border-white/20 ${photoUrl ? 'hidden' : ''}`}>
-                <User className="w-10 h-10 text-white/70" />
+              <div className={`w-24 h-24 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border-2 border-white/20 print:w-20 print:h-20 ${photoUrl ? 'hidden' : ''}`}>
+                <User className="w-12 h-12 text-white/70" />
               </div>
             </div>
             
@@ -58,13 +58,13 @@ export const ConsultationHeader = ({ title, subtitle, cadastral, fotos }: Consul
               </div>
               
               {cadastral?.nome && (
-                <h2 className="text-2xl font-extrabold tracking-tight print:text-xl mt-1">
+                <h2 className="text-3xl font-extrabold tracking-tight print:text-2xl mt-1">
                   {cadastral.nome}
                 </h2>
               )}
               
               {cadastral?.cpfMask && (
-                <p className="text-white/80 font-medium mt-1">
+                <p className="text-lg text-white/80 font-medium mt-1 print:text-base">
                   CPF: {cadastral.cpfMask}
                 </p>
               )}
