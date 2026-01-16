@@ -1,6 +1,6 @@
 import { 
   MapPin, Phone, Mail, Briefcase, Building2, AlertTriangle, 
-  Syringe, Gift, ShoppingBag, Users, FileText, ImageIcon
+  Syringe, Gift, ShoppingBag, Users
 } from "lucide-react";
 import { ConsultationHeader } from "./ConsultationHeader";
 import { PersonalDataSection } from "./PersonalDataSection";
@@ -18,6 +18,10 @@ import { EducationSection } from "./EducationSection";
 import { ParentsSection } from "./ParentsSection";
 import { RGsSection } from "./RGsSection";
 import { FamilyTree } from "./FamilyTree";
+import { PixKeysSection } from "./PixKeysSection";
+import { BankAccountsSection } from "./BankAccountsSection";
+import { TravelHistorySection } from "./TravelHistorySection";
+import { DocumentsGallerySection } from "./DocumentsGallerySection";
 import { ConsultaAPIResponse } from "@/types/consultation";
 
 interface ConsultationViewProps {
@@ -327,24 +331,21 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
             )}
           </div>
 
-          {/* Fotos extras se houver */}
-          {allFotos.length > 1 && (
-            <SectionCard title="Fotos" icon={ImageIcon} count={allFotos.length}>
-              <div className="flex flex-wrap gap-3">
-                {allFotos.map((foto, i) => (
-                  <img 
-                    key={i}
-                    src={foto.foto} 
-                    alt={`Foto ${i + 1}`}
-                    className="w-24 h-24 rounded-lg object-cover border border-border shadow-sm"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
-                ))}
-              </div>
-            </SectionCard>
-          )}
+          {/* Chaves PIX */}
+          <PixKeysSection chavesPix={response.chavesPix} />
+
+          {/* Contas Bancárias */}
+          <BankAccountsSection contasBancos={response.contasBancos} />
+
+          {/* Histórico de Viagens */}
+          <TravelHistorySection viagens={response.viagens} />
+
+          {/* Fotos e Documentos */}
+          <DocumentsGallerySection 
+            fotos={response.fotos}
+            extraFotos={response.extraFotos}
+            docsBase64={response.docsBase64}
+          />
         </div>
 
         <footer className="mt-8 pt-4 border-t border-divider text-center text-sm text-muted-foreground print:mt-4">
