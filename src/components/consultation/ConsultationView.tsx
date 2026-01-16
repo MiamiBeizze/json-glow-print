@@ -27,6 +27,8 @@ import { CNHSection } from "./CNHSection";
 import { AircraftSection } from "./AircraftSection";
 import { EducationLinkedInSection } from "./EducationLinkedInSection";
 import { FinancialDataSection } from "./FinancialDataSection";
+import { HealthPlansSection } from "./HealthPlansSection";
+import { PropertyEnergySection } from "./PropertyEnergySection";
 import { ConsultaAPIResponse } from "@/types/consultation";
 
 interface ConsultationViewProps {
@@ -363,13 +365,23 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
             emprestimos={response.emprestimos}
           />
 
+          {/* Planos de Saúde e CCF */}
+          <HealthPlansSection 
+            planosSaude={response.planosSaude}
+            ccf={response.ccf}
+          />
+
+          {/* Imóveis SP e Energia */}
+          <PropertyEnergySection 
+            imoveisSp={response.imoveisSp}
+            energias={response.energias}
+          />
+
           {/* Chaves PIX */}
           <PixKeysSection chavesPix={response.chavesPix} />
 
           {/* Contas Bancárias */}
           <BankAccountsSection contasBancos={response.contasBancos} />
-
-          {/* Histórico de Viagens */}
           <TravelHistorySection viagens={response.viagens} />
 
           {/* Fotos e Documentos */}

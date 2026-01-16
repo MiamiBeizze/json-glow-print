@@ -605,6 +605,55 @@ export interface Emprestimo {
   taxaJuros?: string;
 }
 
+// CCF - Cheques sem Fundo
+export interface CCF {
+  banco?: string;
+  agencia?: string;
+  numeroCheque?: string;
+  valor?: string;
+  dataOcorrencia?: string;
+  motivo?: string;
+  situacao?: string;
+  quantidade?: number;
+}
+
+// Imóvel SP
+export interface ImovelSP {
+  numeroContribuinte?: string;
+  tipoImovel?: string;
+  endereco?: string;
+  bairro?: string;
+  areaTerreno?: string;
+  areaConstruida?: string;
+  valorVenal?: string;
+  anoExercicio?: number;
+  iptu?: string;
+  situacao?: string;
+}
+
+// Energia
+export interface Energia {
+  distribuidora?: string;
+  codigoInstalacao?: string;
+  endereco?: string;
+  classe?: string;
+  situacao?: string;
+  dataLigacao?: string;
+  consumoMedio?: string;
+}
+
+// Plano de Saúde
+export interface PlanoSaude {
+  operadora?: string;
+  numeroCarteira?: string;
+  plano?: string;
+  tipoContrato?: string;
+  dataAdesao?: string;
+  situacao?: string;
+  cobertura?: string;
+  abrangencia?: string;
+}
+
 export interface ServiceResponse {
   cadastral?: Cadastral;
   credenciaisVazadas?: CredencialVazada[];
@@ -648,7 +697,7 @@ export interface ServiceResponse {
   emprestimos?: Emprestimo[];
   beneficios?: any[];
   dadosConselho?: any[];
-  imoveisSp?: any[];
+  imoveisSp?: ImovelSP[];
   pagamentosAuxilioEmergencial?: any[];
   certidaoObito?: any;
   irpf?: IRPF[];
@@ -658,7 +707,7 @@ export interface ServiceResponse {
   inssSiape?: any[];
   linkedin?: LinkedIn[];
   drones?: Drone[];
-  ccf?: any[];
+  ccf?: CCF[];
   viagens?: Viagem[];
   docsBase64?: DocBase64[];
   // Legacy/Other
