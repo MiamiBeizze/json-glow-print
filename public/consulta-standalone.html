@@ -367,64 +367,186 @@
       margin-top: 4px;
     }
 
-    /* Print styles */
+    /* Print styles - ROBUSTO PARA QUALQUER PROJETO */
     @media print {
       @page {
-        size: A4;
-        margin: 8mm;
+        size: A4 !important;
+        margin: 8mm !important;
+      }
+
+      /* Reset completo para impressão */
+      *, *::before, *::after {
+        visibility: visible !important;
+        display: block !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
       }
 
       html, body {
-        width: 210mm;
+        width: 210mm !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
         background: white !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-        font-size: 11px;
+        background-color: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        font-size: 11px !important;
+        visibility: visible !important;
+        display: block !important;
+        overflow: visible !important;
       }
 
+      /* Container principal */
       .container {
-        padding: 0;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        visibility: visible !important;
+        display: block !important;
+        background: white !important;
       }
 
       .content {
-        width: 100%;
+        width: 100% !important;
+        max-width: none !important;
+        visibility: visible !important;
+        display: block !important;
       }
 
+      /* Header com cores preservadas */
       .header {
-        box-shadow: none;
-        border-radius: 8px;
-        margin-bottom: 16px;
+        box-shadow: none !important;
+        border-radius: 8px !important;
+        margin-bottom: 16px !important;
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+        background-color: #2563eb !important;
+        color: white !important;
+        visibility: visible !important;
+        display: block !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
       }
 
       .header-content {
-        padding: 16px;
+        padding: 16px !important;
+        display: flex !important;
+        visibility: visible !important;
       }
 
-      .avatar, .avatar-placeholder {
-        width: 80px;
-        height: 80px;
+      .header * {
+        color: white !important;
+        visibility: visible !important;
       }
 
       .header-info h2 {
-        font-size: 24px;
+        font-size: 24px !important;
+        color: white !important;
       }
 
-      .no-print {
+      .avatar, .avatar-placeholder {
+        width: 80px !important;
+        height: 80px !important;
+        display: flex !important;
+        visibility: visible !important;
+      }
+
+      /* Esconder elementos de interação */
+      .no-print,
+      button,
+      .btn,
+      [role="button"] {
         display: none !important;
+        visibility: hidden !important;
       }
 
+      /* Seções com cores preservadas */
       .section-card {
-        box-shadow: none;
-        page-break-inside: avoid;
-        margin-bottom: 12px;
+        box-shadow: none !important;
+        border: 1px solid #e2e8f0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        margin-bottom: 12px !important;
+        visibility: visible !important;
+        display: block !important;
+        background: white !important;
+      }
+
+      .section-header {
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+        background-color: #2563eb !important;
+        color: white !important;
+        visibility: visible !important;
+        display: flex !important;
+        padding: 12px 16px !important;
+      }
+
+      .section-header * {
+        color: white !important;
+        visibility: visible !important;
       }
 
       .section-body {
-        padding: 16px;
+        padding: 16px !important;
+        visibility: visible !important;
+        display: block !important;
+        background: white !important;
       }
 
-      * {
-        box-shadow: none !important;
+      /* Grid e campos de dados */
+      .data-grid {
+        display: grid !important;
+        visibility: visible !important;
+      }
+
+      .data-field {
+        visibility: visible !important;
+        display: block !important;
+      }
+
+      .data-field-label {
+        color: #64748b !important;
+        visibility: visible !important;
+        display: block !important;
+      }
+
+      .data-field-value {
+        color: #1e293b !important;
+        visibility: visible !important;
+        display: block !important;
+      }
+
+      /* Badges */
+      .badge {
+        visibility: visible !important;
+        display: inline-flex !important;
+        padding: 2px 8px !important;
+        border-radius: 4px !important;
+      }
+
+      .badge-success {
+        background-color: #dcfce7 !important;
+        color: #166534 !important;
+      }
+
+      .badge-warning {
+        background-color: #fef3c7 !important;
+        color: #92400e !important;
+      }
+
+      .badge-info {
+        background-color: #dbeafe !important;
+        color: #1e40af !important;
+      }
+
+      /* Footer */
+      .footer {
+        visibility: visible !important;
+        display: block !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
       }
     }
 
