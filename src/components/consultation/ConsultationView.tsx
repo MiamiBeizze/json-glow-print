@@ -23,6 +23,8 @@ import { BankAccountsSection } from "./BankAccountsSection";
 import { TravelHistorySection } from "./TravelHistorySection";
 import { DocumentsGallerySection } from "./DocumentsGallerySection";
 import { ProcessesSection } from "./ProcessesSection";
+import { CNHSection } from "./CNHSection";
+import { AircraftSection } from "./AircraftSection";
 import { ConsultaAPIResponse } from "@/types/consultation";
 
 interface ConsultationViewProps {
@@ -160,8 +162,14 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
             )}
           </div>
 
+          {/* CNH */}
+          <CNHSection cnh={response.cnh} />
+
           {/* Veículos */}
           <VehiclesSection placas={response.placas || response.veiculos} />
+
+          {/* Aeronaves e Drones */}
+          <AircraftSection aeronaves={response.aeronaves} drones={response.drones} />
 
           {/* Planos e Serviços */}
           <PlansSection planos={response.planos} />
