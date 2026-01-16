@@ -38,19 +38,27 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--background);
+      background: hsl(220, 15%, 20%);
       color: var(--foreground);
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 32px 16px;
     }
 
     .container {
-      min-height: 100vh;
-      padding: 24px;
+      width: 210mm;
+      min-height: 297mm;
+      background: white;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      padding: 20mm;
     }
 
     .content {
-      width: 210mm;
+      width: 100%;
       max-width: 100%;
       margin: 0 auto;
     }
