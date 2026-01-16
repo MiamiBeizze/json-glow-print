@@ -22,6 +22,7 @@ import { PixKeysSection } from "./PixKeysSection";
 import { BankAccountsSection } from "./BankAccountsSection";
 import { TravelHistorySection } from "./TravelHistorySection";
 import { DocumentsGallerySection } from "./DocumentsGallerySection";
+import { ProcessesSection } from "./ProcessesSection";
 import { ConsultaAPIResponse } from "@/types/consultation";
 
 interface ConsultationViewProps {
@@ -283,6 +284,12 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
               </div>
             </SectionCard>
           )}
+
+          {/* Processos Judiciais */}
+          <ProcessesSection 
+            processos={response.processos}
+            vinculosPorProcessos={response.vinculosPorProcessos}
+          />
 
           {/* Compras Online */}
           <OnlinePurchasesSection compras={response.comprasOnline} />
