@@ -1,6 +1,7 @@
-import { FileText, Printer, Calendar, User } from "lucide-react";
+import { FileText, Printer, Calendar, User, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Cadastral, Foto } from "@/types/consultation";
+import { useState } from "react";
 
 interface ConsultationHeaderProps {
   title: string;
@@ -10,8 +11,47 @@ interface ConsultationHeaderProps {
 }
 
 export const ConsultationHeader = ({ title, subtitle, cadastral, fotos }: ConsultationHeaderProps) => {
+  const [isExporting, setIsExporting] = useState(false);
+
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    try {
+      const html2pdf = (await import('html2pdf.js')).default;
+      const element = document.querySelector('.consultation-content');
+      
+      if (!element) {
+        console.error('Element not found');
+        return;
+      }
+
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: `consulta-${cadastral?.cpf || 'relatorio'}-${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+          scale: 2,
+          useCORS: true,
+          letterRendering: true,
+          logging: false
+        },
+        jsPDF: { 
+          unit: 'mm', 
+          format: 'a4', 
+          orientation: 'portrait' 
+        },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      };
+
+      await html2pdf().set(opt).from(element).save();
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const currentDate = new Date().toLocaleDateString("pt-BR", {
@@ -80,6 +120,16 @@ export const ConsultationHeader = ({ title, subtitle, cadastral, fotos }: Consul
               <Calendar className="w-4 h-4" />
               <span>{currentDate}</span>
             </div>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleExportPDF}
+              disabled={isExporting}
+              className="flex items-center gap-2 shadow-md"
+            >
+              <Download className="w-4 h-4" />
+              {isExporting ? 'Exportando...' : 'Exportar PDF'}
+            </Button>
             <Button
               variant="secondary"
               size="sm"

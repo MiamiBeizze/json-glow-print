@@ -63,7 +63,7 @@ export const ConsultationView = ({ data }: ConsultationViewProps) => {
 
   return (
     <div className="min-h-screen bg-background p-6 print:p-0 print:bg-white">
-      <div className="w-[210mm] mx-auto">
+      <div className="w-[210mm] mx-auto consultation-content">
         <ConsultationHeader 
           title="Consulta Cadastral"
           subtitle="Relatório completo"
