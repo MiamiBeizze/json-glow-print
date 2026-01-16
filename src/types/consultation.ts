@@ -330,15 +330,54 @@ export interface Contato {
 
 export interface Veiculo {
   placa?: string;
-  renavam?: string;
+  renavam?: string | number;
   chassi?: string;
   marca?: string;
   modelo?: string;
-  anoFabricacao?: string;
-  anoModelo?: string;
+  anoFab?: number;
+  anoFabricacao?: string | number;
+  anoModelo?: string | number;
   cor?: string;
   combustivel?: string;
   situacao?: string;
+  fotosCarro?: string[];
+}
+
+export interface Plano {
+  empresa?: string;
+  plano?: string;
+  valor?: string;
+  tecnologia?: string;
+  tipoProduto?: string;
+  dataProduto?: string;
+  endereco?: string;
+  cidade?: string;
+  uf?: string;
+  cep?: string | number;
+  numero?: string;
+  complemento?: string;
+  contrato?: string;
+  statusProduto?: string;
+}
+
+export interface RGDetalhado {
+  cpf?: number;
+  rg?: string;
+  orgaorg?: string;
+  ufrg?: string;
+  emissaorg?: string;
+}
+
+export interface RAIS {
+  cpf?: number;
+  cnpj?: number;
+  ano_base?: number;
+  ano_exercicio?: number;
+  admissao?: string;
+  demissao?: string | null;
+  demissao_tratada?: string;
+  nome_fantasia?: string;
+  razao_social?: string;
 }
 
 export interface CIN {
@@ -452,7 +491,11 @@ export interface ServiceResponse {
   aeronaves?: Aeronave[];
   processos?: Processo[];
   vinculosPorProcessos?: VinculoProcesso[];
-  placas?: any[];
+  // New fields from JSON
+  placas?: Veiculo[];
+  planos?: Plano[];
+  rgs?: RGDetalhado[];
+  rais?: RAIS[];
 }
 
 export interface ConsultaAPIResponse {
